@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`compileOnce successfully compiles project: compiler DTS output 1`] = `
+"export declare class TestClass {
+}
+"
+`;
+
+exports[`compileOnce successfully compiles project: compiler JS output 1`] = `
+"\\"use strict\\";
+Object.defineProperty(exports, \\"__esModule\\", { value: true });
+class TestClass {
+}
+exports.TestClass = TestClass;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJpbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOztBQUFBLE1BQWEsU0FBUztDQUFHO0FBQXpCLDhCQUF5QiJ9"
+`;

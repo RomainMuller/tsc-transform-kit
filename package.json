@@ -17,6 +17,17 @@
   ],
   "author": "Romain Marcadier-Muller (https://romainmuller.dev)",
   "license": "Apache-2.0",
+  "homepage": "https://github.com/RomainMuller/tsc-transform-kit",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RomainMuller/tsc-transform-kit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/RomainMuller/tsc-transform-kit/issues"
+  },
+  "engines": {
+    "node": ">= 10.3.0"
+  },
   "devDependencies": {
     "@types/fs-extra": "^8.0.1",
     "@types/jest": "^25.1.0",

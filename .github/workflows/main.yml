@@ -1,0 +1,67 @@
+name: Validation Build
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 13.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node ${{ matrix.node-version }}
+        uses: actions/setup-node@master
+        with:
+          node-version: ${{matrix.node-version}}
+
+      - name: Locate Yarn cache
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Restore Yarn cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |-
+            ${{ runner.os }}-yarn-
+
+      - name: Set up CodeClimate
+        if: matrix.node-version == '10.x'
+        run: |
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 -o /tmp/cc-test-reporter
+          chmod +x /tmp/cc-test-reporter
+          export GIT_COMMIT_SHA=$(git rev-parse HEAD)
+          /tmp/cc-test-reporter before-build
+        env:
+          CC_TEST_REPORTER_ID:  ${{secrets.CC_TEST_REPORTER_ID}}
+          GIT_BRANCH:           ${{github.head_ref}}
+
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+      - name: Build
+        run: yarn build
+      - name: Test
+        run: yarn test
+
+      - name: CodeClimate Report
+        if: always() && matrix.node-version == '10.x'
+        run: |
+          export GIT_COMMIT_SHA=$(git rev-parse HEAD)
+          if [ '${{job.status}}' = 'Success' ]; then
+            /tmp/cc-test-reporter after-build -t lcov
+          else
+            /tmp/cc-test-reporter after-build -t lcov --exit-code 1
+          fi
+        env:
+          CC_TEST_REPORTER_ID:  ${{secrets.CC_TEST_REPORTER_ID}}
+          GIT_BRANCH:           ${{github.head_ref}}

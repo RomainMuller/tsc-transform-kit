@@ -88,13 +88,13 @@ export class TypeScriptCompiler {
       false,      // emitOnlyDtsFiles
       {           // customTransformers
         before: this.transformers
-          .filter(tx => tx.stage === TransformerStage.BEFORE)
+          .filter(tx => tx.stages.includes(TransformerStage.BEFORE))
           .map(tx => toTransformerFactory(tx as Transformer<ts.SourceFile>)),
         after: this.transformers
-          .filter(tx => tx.stage === TransformerStage.AFTER)
+          .filter(tx => tx.stages.includes(TransformerStage.AFTER))
           .map(tx => toTransformerFactory(tx as Transformer<ts.SourceFile>)),
         afterDeclarations: this.transformers
-          .filter(tx => tx.stage === TransformerStage.AFTER_DECLARATIONS)
+          .filter(tx => tx.stages.includes(TransformerStage.AFTER_DECLARATIONS))
           .map(toTransformerFactory),
       },
     );

@@ -2,6 +2,7 @@
 
 exports[`compileOnce successfully compiles project: compiler DTS output 1`] = `
 "export declare class TestClass {
+    readonly property = 1337;
 }
 "
 `;
@@ -10,7 +11,10 @@ exports[`compileOnce successfully compiles project: compiler JS output 1`] = `
 "\\"use strict\\";
 Object.defineProperty(exports, \\"__esModule\\", { value: true });
 class TestClass {
+    constructor() {
+        this.property = 1337;
+    }
 }
 exports.TestClass = TestClass;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJpbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOztBQUFBLE1BQWEsU0FBUztDQUFHO0FBQXpCLDhCQUF5QiJ9"
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJpbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOztBQUNBLE1BQWEsU0FBUztJQUF0QjtRQUNrQixhQUFRLEdBQUcsSUFBSSxDQUFDO0lBQ2xDLENBQUM7Q0FBQTtBQUZELDhCQUVDIn0="
 `;

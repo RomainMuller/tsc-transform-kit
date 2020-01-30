@@ -7,7 +7,7 @@ export abstract class Transformer<RootNode extends ts.Node> {
   /**
    * The `TransformStage` at which this `Transformer` operates.
    */
-  public abstract readonly stage: TransformerStage;
+  public abstract readonly stages: readonly TransformerStage[];
 
   /**
    * Performs the TypeScript transformation on the provided `RootNode`.
@@ -35,8 +35,22 @@ export abstract class Transformer<RootNode extends ts.Node> {
   protected abstract visitNode<T extends ts.Node>(node: T, env: TransformEnvironment): ts.VisitResult<T>;
 
   private visit<T extends ts.Node>(program: ts.BuilderProgram, context: ts.TransformationContext, node: T): ts.VisitResult<T> {
-    this.visitNode(node, { context, program });
-    return ts.visitEachChild(node, node => this.visit(program, context, node), context);
+    let result = this.visitNode(node, { context, program });
+
+    if (result === undefined) {
+      return undefined;
+    }
+
+    if (!Array.isArray(result)) {
+      result = [result];
+    }
+
+    result = result.map(newNode => ts.visitEachChild(newNode, toVisit => this.visit(program, context, toVisit), context))
+      .filter(result => result != null)
+      .map(result => Array.isArray(result) ? result : [result])
+      .reduce((acc, newNode) => [...acc, newNode], []);
+
+    return result.length === 1 ? result[0] : result;
   }
 }
 

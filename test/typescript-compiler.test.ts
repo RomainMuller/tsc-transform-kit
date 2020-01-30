@@ -1,8 +1,8 @@
 import * as fs from 'fs-extra';
-import { tmpdir } from 'os';
-import { basename, join } from 'path';
+import { join } from 'path';
 import * as ts from 'typescript';
 import { TypeScriptCompiler } from '../lib';
+import { TsConfigJson, withProject, withProjectSync } from './with-project';
 
 const tsconfig: TsConfigJson = {
   compilerOptions: {
@@ -26,7 +26,9 @@ const tsconfig: TsConfigJson = {
 
 describe('compileOnce', () => {
   test('successfully compiles project', () => {
-    withProjectSync(projectRoot => {
+    withProjectSync(tsconfig, projectRoot => {
+      fs.writeFileSync(join(projectRoot, 'index.ts'), INDEX_TS, { encoding: 'utf-8' });
+
       const compiler = new TypeScriptCompiler(join(projectRoot, 'tsconfig.json'));
 
       const result = compiler.compileOnce();
@@ -43,7 +45,9 @@ describe('compileOnce', () => {
 
 describe('compileAndWatch', () => {
   test('successfully compiles project', () =>
-    withProject(async projectRoot => {
+    withProject(tsconfig, async projectRoot => {
+      fs.writeFileSync(join(projectRoot, 'index.ts'), INDEX_TS, { encoding: 'utf-8' });
+
       const compiler = new TypeScriptCompiler(join(projectRoot, 'tsconfig.json'));
 
       let ok!: () => void;
@@ -90,45 +94,8 @@ describe('compileAndWatch', () => {
   );
 });
 
-function withProjectSync<T>(cb: (projectRoot: string) => T): T {
-  const dir = fs.mkdtempSync(join(tmpdir(), basename(__filename)));
-  try {
-    fs.writeFileSync(join(dir, 'tsconfig.json'), JSON.stringify(forWriting(tsconfig), null, 2), { encoding: 'utf-8' });
-    fs.writeFileSync(join(dir, 'index.ts'), 'export class TestClass {}', { encoding: 'utf-8' });
-
-    return cb(dir);
-  } finally {
-    fs.removeSync(dir);
-  }
+const INDEX_TS = `
+export class TestClass {
+  public readonly property = 1337;
 }
-
-async function withProject<T>(cb: (projectRoot: string) => Promise<T>): Promise<T> {
-  const dir = fs.mkdtempSync(join(tmpdir(), basename(__filename)));
-  try {
-    fs.writeFileSync(join(dir, 'tsconfig.json'), JSON.stringify(forWriting(tsconfig), null, 2), { encoding: 'utf-8' });
-    fs.writeFileSync(join(dir, 'index.ts'), 'export class TestClass {}', { encoding: 'utf-8' });
-
-    return await cb(dir);
-  } finally {
-    fs.removeSync(dir);
-  }
-}
-
-function forWriting(config: TsConfigJson): any {
-  const compilerOptions = { ...config.compilerOptions };
-
-  valueToName(compilerOptions, 'module', ts.ModuleKind);
-  valueToName(compilerOptions, 'moduleResolution', { ...ts.ModuleResolutionKind, [ts.ModuleResolutionKind.NodeJs]: 'node' });
-  valueToName(compilerOptions, 'target', ts.ScriptTarget);
-
-  return { ...config, compilerOptions };
-
-  function valueToName(obj: any, key: string, dict: { [key: number]: string }) {
-    if (!(key in obj)) { return; }
-    obj[key] = dict[obj[key]];
-  }
-}
-
-interface TsConfigJson {
-  readonly compilerOptions: ts.CompilerOptions;
-}
+`;

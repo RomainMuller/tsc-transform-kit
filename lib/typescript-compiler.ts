@@ -3,20 +3,23 @@ import { Transformer, TransformerStage } from './transformer';
 import { reportDiagnostic } from './report-diagnostic';
 
 export class TypeScriptCompiler {
-  private readonly transformers: Transformer<ts.Bundle | ts.SourceFile>[] = [];
+  readonly #transformers: Transformer<ts.Bundle | ts.SourceFile>[] = [];
+  readonly #configFilePath: string;
 
-  public constructor(private readonly configFilePath: string) {}
+  public constructor(configFilePath: string) {
+    this.#configFilePath = configFilePath;
+  }
 
   public appendTransformer(transformer: Transformer<ts.Bundle | ts.SourceFile>) {
-    this.transformers.push(transformer);
+    this.#transformers.push(transformer);
   }
 
   public prependTransformer(transformer: Transformer<ts.Bundle | ts.SourceFile>) {
-    this.transformers.unshift(transformer);
+    this.#transformers.unshift(transformer);
   }
 
   public compileOnce(): ts.EmitResult {
-    const parsedCommandLine = this.parseCompilerConfiguration();
+    const parsedCommandLine = this.#parseCompilerConfiguration();
     const host = ts.createIncrementalCompilerHost(parsedCommandLine.options);
 
     const configFileParsingDiagnostics = ts.getConfigFileParsingDiagnostics(parsedCommandLine);
@@ -28,7 +31,7 @@ export class TypeScriptCompiler {
       projectReferences: parsedCommandLine.projectReferences,
     });
 
-    const transformResult = this.transformProgram(program);
+    const transformResult = this.#transformProgram(program);
     return {
       ...transformResult,
       diagnostics: [...configFileParsingDiagnostics, ...transformResult.diagnostics],
@@ -37,7 +40,7 @@ export class TypeScriptCompiler {
 
   public compileAndWatch(watchOptions?: TypeScriptWatchOptions): ts.Watch<ts.BuilderProgram> {
     const host = ts.createWatchCompilerHost(
-      this.configFilePath,
+      this.#configFilePath,
       DEFAULT_COMPILER_OPTIONS,
       ts.sys,
       undefined,
@@ -47,7 +50,7 @@ export class TypeScriptCompiler {
 
     const afterProgramCreate = host.afterProgramCreate;
     host.afterProgramCreate = program => {
-      const emitResult = this.transformProgram(program);
+      const emitResult = this.#transformProgram(program);
 
       for (const diagnostic of emitResult.diagnostics) {
         watchOptions.reportDiagnostic(diagnostic);
@@ -61,7 +64,7 @@ export class TypeScriptCompiler {
     return ts.createWatchProgram(host);
   }
 
-  private parseCompilerConfiguration() {
+  readonly #parseCompilerConfiguration = () => {
     const host: ts.ParseConfigFileHost = {
       fileExists: ts.sys.fileExists,
       getCurrentDirectory: ts.sys.getCurrentDirectory,
@@ -73,14 +76,14 @@ export class TypeScriptCompiler {
       readFile: ts.sys.readFile,
       useCaseSensitiveFileNames: ts.sys.useCaseSensitiveFileNames,
     };
-    const result = ts.getParsedCommandLineOfConfigFile(this.configFilePath, DEFAULT_COMPILER_OPTIONS, host);
+    const result = ts.getParsedCommandLineOfConfigFile(this.#configFilePath, DEFAULT_COMPILER_OPTIONS, host);
     if (result == null) {
-      throw new Error(`Unable to parse command line equivalent from the config file at: ${this.configFilePath}`);
+      throw new Error(`Unable to parse command line equivalent from the config file at: ${this.#configFilePath}`);
     }
     return result;
-  }
+  };
 
-  private transformProgram(program: ts.BuilderProgram) {
+  readonly #transformProgram = (program: ts.BuilderProgram) => {
     const additionalDiagnostics = new Array<ts.Diagnostic>();
     const emitResult = program.emit(
       undefined,  // targetSourceFile
@@ -88,13 +91,13 @@ export class TypeScriptCompiler {
       undefined,  // cancellationToken
       false,      // emitOnlyDtsFiles
       {           // customTransformers
-        before: this.transformers
+        before: this.#transformers
           .filter(tx => tx.stages.includes(TransformerStage.BEFORE))
           .map(tx => toTransformerFactory(tx as Transformer<ts.SourceFile>)),
-        after: this.transformers
+        after: this.#transformers
           .filter(tx => tx.stages.includes(TransformerStage.AFTER))
           .map(tx => toTransformerFactory(tx as Transformer<ts.SourceFile>)),
-        afterDeclarations: this.transformers
+        afterDeclarations: this.#transformers
           .filter(tx => tx.stages.includes(TransformerStage.AFTER_DECLARATIONS))
           .map(toTransformerFactory),
       },
@@ -109,7 +112,7 @@ export class TypeScriptCompiler {
       return context =>
         node => transformer.transform(program, context, node, additionalDiagnostics.push.bind(additionalDiagnostics));
     }
-  }
+  };
 }
 
 export interface TypeScriptCompilerOptions {

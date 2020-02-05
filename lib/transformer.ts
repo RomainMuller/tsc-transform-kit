@@ -27,7 +27,7 @@ export abstract class Transformer<RootNode extends ts.Node> {
     node: RootNode,
     reporter: DiagnosticReporter,
   ): RootNode {
-    return ts.visitNode(node, node => this.visit(program, context, node, reporter));
+    return ts.visitNode(node, node => this.#visit(program, context, node, reporter));
   }
 
   /**
@@ -40,12 +40,7 @@ export abstract class Transformer<RootNode extends ts.Node> {
    */
   protected abstract visitNode<T extends ts.Node>(node: T, env: TransformEnvironment): ts.VisitResult<T>;
 
-  private visit<T extends ts.Node>(
-    program: ts.BuilderProgram,
-    context: ts.TransformationContext,
-    node: T,
-    reporter: DiagnosticReporter,
-  ): ts.VisitResult<T> {
+  readonly #visit = <T extends ts.Node>(program: ts.BuilderProgram, context: ts.TransformationContext, node: T, reporter: DiagnosticReporter): ts.VisitResult<T> => {
     let result = this.visitNode(node, {
       context, program,
       reportDiagnostic: (node, category, code, messageText) => reporter({
@@ -66,13 +61,13 @@ export abstract class Transformer<RootNode extends ts.Node> {
       result = [result];
     }
 
-    result = result.map(newNode => ts.visitEachChild(newNode, toVisit => this.visit(program, context, toVisit, reporter), context))
+    result = result.map(newNode => ts.visitEachChild(newNode, toVisit => this.#visit(program, context, toVisit, reporter), context))
       .filter(result => result != null)
       .map(result => Array.isArray(result) ? result : [result])
       .reduce((acc, newNode) => [...acc, newNode], []);
 
     return result.length === 1 ? result[0] : result;
-  }
+  };
 }
 
 /**

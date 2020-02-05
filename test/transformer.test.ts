@@ -1,7 +1,7 @@
 import * as fs from 'fs-extra';
 import { join } from 'path';
 import ts = require('typescript');
-import { utils, Transformer, TransformerStage, TypeScriptCompiler } from '../lib';
+import { utils, Transformer, TransformerStage, TypeScriptCompiler, TransformEnvironment } from '../lib';
 import { withProjectSync, TsConfigJson } from './with-project';
 
 // Use the defaults...
@@ -25,6 +25,25 @@ test('TypeScriptCompiler applies configured transformers', () =>
       .toContain('magicPROPERTY');
   })
 );
+
+test('TypeScriptCompiler reports Diagnostics from the transformers', () => {
+  withProjectSync(tsconfig, projectRoot => {
+    fs.writeFileSync(join(projectRoot, 'index.ts'), INDEX_TS, { encoding: 'utf-8' });
+
+    const compiler = new TypeScriptCompiler(join(projectRoot, 'tsconfig.json'));
+    compiler.appendTransformer(new DiagnosticEmittingTransformer());
+
+    const emitResult = compiler.compileOnce();
+
+    expect(emitResult.emitSkipped).toBeFalsy();
+    expect(emitResult.diagnostics).not.toEqual([]);
+
+    for (const entry of emitResult.diagnostics) {
+      expect(entry.code).toBe(-1337);
+      expect(entry.messageText).toBe('Phony!');
+    }
+  });
+});
 
 class UpcasePropertyNamesTransformer extends Transformer<ts.Bundle | ts.SourceFile> {
   public readonly stages: readonly TransformerStage[] = [TransformerStage.BEFORE, TransformerStage.AFTER_DECLARATIONS];
@@ -56,6 +75,15 @@ class MakePropertyNamesMagicTransformer extends Transformer<ts.Bundle | ts.Sourc
         node.type,
         node.initializer) as unknown as T;
     }
+    return node;
+  }
+}
+
+class DiagnosticEmittingTransformer extends Transformer<ts.SourceFile> {
+  public readonly stages: readonly TransformerStage[] = [TransformerStage.BEFORE];
+
+  protected visitNode<T extends ts.Node>(node: T, env: TransformEnvironment): ts.VisitResult<T> {
+    env.reportDiagnostic(node, ts.DiagnosticCategory.Message, -1337, 'Phony!');
     return node;
   }
 }

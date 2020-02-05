@@ -81,7 +81,8 @@ export class TypeScriptCompiler {
   }
 
   private transformProgram(program: ts.BuilderProgram) {
-    return program.emit(
+    const additionalDiagnostics = new Array<ts.Diagnostic>();
+    const emitResult = program.emit(
       undefined,  // targetSourceFile
       undefined,  // writeFile
       undefined,  // cancellationToken
@@ -99,8 +100,14 @@ export class TypeScriptCompiler {
       },
     );
 
+    return {
+      ...emitResult,
+      diagnostics: [...emitResult.diagnostics, ...additionalDiagnostics]
+    };
+
     function toTransformerFactory<T extends ts.Bundle | ts.SourceFile>(transformer: Transformer<T>): ts.TransformerFactory<T> {
-      return context => node => transformer.transform(program, context, node);
+      return context =>
+        node => transformer.transform(program, context, node, additionalDiagnostics.push.bind(additionalDiagnostics));
     }
   }
 }

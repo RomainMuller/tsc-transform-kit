@@ -1,139 +1,153 @@
 import * as ts from 'typescript';
 
 /**
- * A TypeScript transformer.
+ * Transformers encapsulate the logic to transform TypeScript AST nodes during
+ * the compilation phases.
  */
-export abstract class Transformer<RootNode extends ts.Node> {
+export abstract class Transformer {
   /**
-   * The `TransformStage` at which this `Transformer` operates.
+   * Transforms a node, possibly returning another node of the same type.
+   *
+   * @param node    the node to be transformed.
+   * @param context the context of the transformation.
+   *
+   * @return the result of the transformation.
    */
-  public abstract readonly stages: readonly TransformerStage[];
-
-  /**
-   * Performs the TypeScript transformation on the provided `RootNode`.
-   *
-   * @param program  the TypeScript `Program` that is being transformed.
-   * @param context  the `TransformationContext` under which we are operating.
-   * @param node     the `RootNode` to be transformed.
-   * @param reporter the `Diagnostic` reporter.
-   *
-   * @returns the transformed `RootNode`.
-   *
-   * @internal
-   */
-  public transform(
-    program: ts.BuilderProgram,
-    context: ts.TransformationContext,
-    node: RootNode,
-    reporter: DiagnosticReporter,
-  ): RootNode {
-    return ts.visitNode(node, node => this.visit(program, context, node, reporter));
+  public transform<T extends ts.Node>(node: T, context: TransformerContext): T {
+    return ts.visitNode(
+      node,
+      node => this.visit(node, context),
+      this.isValidNode && (node => this.isValidNode!(node, context)),
+      this.liftNodeArray && (node => this.liftNodeArray!<T>(node, context)),
+    );
   }
 
   /**
-   * Implements the logic for transforming a given TypeScript `node`.
+   * This method can be invoked to perform transformation of children node of
+   * this. It may return a new node of the same type.
    *
-   * @param node the `Node` to be transformed.
-   * @param env  the `TransformEnvironment` under which we are operating.
+   * @param node    the node which children are to be transformed.
+   * @param context the context of the transformation.
    *
-   * @returns a `VisitResult` denoting the outcome of the transformation.
+   * @returns the result of the children transformation.
    */
-  protected abstract visitNode<T extends ts.Node>(node: T, env: TransformEnvironment): ts.VisitResult<T>;
+  public transformChildren<T extends ts.Node>(node: T, context: TransformerContext): T {
+    return ts.visitEachChild(
+      node,
+      node => this.visit(node, context),
+      context.context
+    );
+  }
 
-  private visit<T extends ts.Node>(
-    program: ts.BuilderProgram,
+  /**
+   * This is the main entry point for a Transformer. It accepts a TypeScript AST
+   * node and returns the appropriate transform result. If no transformation is
+   * needed, the node should be returned unchanged.
+   *
+   * @param node    the AST node to be transformed.
+   * @param context the context of the transformation.
+   *
+   * @returns the result of the transformation.
+   */
+  public abstract visit<T extends ts.Node>(node: T, context: TransformerContext): ts.VisitResult<T>;
+
+  /**
+   * An optional test to determine whether a node is valid or not.
+   *
+   * @param node    the node being checked.
+   * @param context the context of the transformation.
+   *
+   * @returns `true` if the node is valid.
+   */
+  public readonly isValidNode?: (node: ts.Node, context: TransformerContext) => boolean;
+
+  /**
+   * An optional function to lift a NodeArray into a valid Node.
+   *
+   * @param nodes   the NodeArray to be lifted.
+   * @param context the context of the transformation.
+   *
+   * @returns the lifted node.
+   */
+  public readonly liftNodeArray?: <T extends ts.Node>(nodes: ts.NodeArray<ts.Node>, context: TransformerContext) => T;
+}
+
+/**
+ * The context of a transformation.
+ */
+export class TransformerContext {
+  /**
+   * The TypeScript transformation context.
+   */
+  public readonly context: ts.TransformationContext;
+
+  /**
+   * The phase in which the transformation is running.
+   */
+  public readonly phase: TransformerPhase;
+
+  /** @internal */
+  public constructor(
+    phase: TransformerPhase,
     context: ts.TransformationContext,
-    node: T,
-    reporter: DiagnosticReporter,
-  ): ts.VisitResult<T> {
-    let result = this.visitNode(node, {
-      context, program,
-      reportDiagnostic: (node, category, code, messageText) => reporter({
-        category,
-        code,
-        file: node?.getSourceFile(),
-        messageText,
-        start: node?.getStart(),
-        length: node && node.getEnd() - node.getStart(),
-      })
-    });
+    private readonly invalidatedProject: ts.InvalidatedProject<ts.BuilderProgram>,
+  ) {
+    this.context = context;
+    this.phase = phase;
+  }
 
-    if (result === undefined) {
-      return undefined;
+  /**
+   * Compiler options used for the current transformation.
+   */
+  public get compilerOptions(): ts.CompilerOptions {
+    return this.invalidatedProject.getCompilerOptions();
+  }
+
+  /**
+   * The directory in which the compiler is currently operating.
+   */
+  public get currentDirectory(): string {
+    return this.invalidatedProject.getCurrentDirectory();
+  }
+
+  /**
+   * The path to the configuration file of the current project.
+   */
+  public get projectConfiguration(): string {
+    return this.invalidatedProject.project;
+  }
+
+  /**
+   * The TypeScript program being transformed. This is only available if the
+   * invalidated project that triggered the transformation is of "Build" kind.
+   */
+  public get program(): ts.Program | undefined {
+    if (this.invalidatedProject.kind === ts.InvalidatedProjectKind.Build) {
+      this.invalidatedProject.getProgram();
     }
-
-    if (!Array.isArray(result)) {
-      result = [result];
-    }
-
-    result = result.map(newNode => ts.visitEachChild(newNode, toVisit => this.visit(program, context, toVisit, reporter), context))
-      .filter(result => result != null)
-      .map(result => Array.isArray(result) ? result : [result])
-      .reduce((acc, newNode) => [...acc, newNode], []);
-
-    return result.length === 1 ? result[0] : result;
+    return undefined;
   }
 }
 
 /**
- * The stages at which transformation can occur.
+ * The various possible transformation phaseS.
  */
-export const enum TransformerStage {
+export const enum TransformerPhase {
   /**
-   * This transformation happens *before* the *TypeScript* transformations have
-   * occurred. Code has not been compiled and it is possible to influence the
-   * generated *JavaScript*.
-   *
-   * In the majority of cases, transformers operate in this phase.
+   * TypeScript's own transformations are yet to run. This phase is almost never
+   * the one you should be transforming in.
    */
-  BEFORE = 'before',
+  Before = 'before',
 
   /**
-   * This transformation happens *after* the *TypeScript* transformations have
-   * occurred. Code has been compiled already.
+   * TypeScript's own transformations have run already. This phase is almost
+   * always the one you should be transforming in.
    */
-  AFTER = 'after',
+  After = 'after',
 
   /**
-   * This transformation happens *after* the *declarations* have been prepared,
-   * and type definitions can be altered at this point.
+   * TypeScript's own transformations have run already, and declarations are
+   * ready. This phase is where you can influence emitted types.
    */
-  AFTER_DECLARATIONS = 'afterDeclarations',
+  AfterDeclarations = 'afterDeclarations',
 }
-
-/**
- * The environment under which a transformation operates.
- */
-export interface TransformEnvironment {
-  /**
-   * The TypeScript `TransformationContext` provided by the compiler framework.
-   */
-  readonly context: ts.TransformationContext;
-
-  /**
-   * The TypeScript `Program`, from which a `TypeChecker` can be obtained.
-   */
-  readonly program: ts.BuilderProgram;
-
-  /**
-   * A facility to report `Diagnostic` messages to the compiler.
-   *
-   * @param node        the `Node` the error is related to.
-   * @param category    the `DiagnosticCategory` for the message.
-   * @param code        the code for the diagnostic message.
-   * @param messageText the text for the message.
-   */
-  readonly reportDiagnostic: (
-    node: ts.Node | null,
-    category: ts.DiagnosticCategory,
-    code: number,
-    messageText: string
-  ) => void;
-}
-
-/**
- * A function that reports `Diagnostic` entries to the `TypeScriptCompiler`.
- *
- * @param diag the `Diagnostic` to be reported.
- */
-export type DiagnosticReporter = (diag: ts.Diagnostic) => void;

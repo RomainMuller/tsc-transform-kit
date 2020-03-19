@@ -1,5 +1,4 @@
-import * as utils from './utils';
-
 export * from './transformer';
-export * from './typescript-compiler';
-export { utils };
+export * from './transformers';
+export * from './typescript-project';
+export * from './watch';

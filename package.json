@@ -1,12 +1,14 @@
 {
   "name": "@romainmuller/tsc-transform-kit",
-  "version": "0.0.0",
   "description": "A framework to write TypeScript transforms.",
+  "version": "0.0.0",
+  "type": "commonjs",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
   "scripts": {
-    "build": "tsc --build",
+    "build": "tsc --build && npm run lint",
     "build:watch": "tsc --build --watch",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "test": "jest",
     "test:update": "jest -u",
     "test:watch": "jest --watch"
@@ -29,27 +31,19 @@
     "node": ">= 10.3.0"
   },
   "devDependencies": {
-    "@types/fs-extra": "^8.1.0",
     "@types/jest": "^25.1.4",
     "@types/node": "^10.17.17",
-    "fs-extra": "^8.1.0",
+    "@typescript-eslint/eslint-plugin": "^2.24.0",
+    "@typescript-eslint/parser": "^2.24.0",
+    "eslint": "^6.8.0",
+    "eslint-import-resolver-node": "^0.3.3",
+    "eslint-import-resolver-typescript": "^2.0.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jest": "^23.8.2",
     "jest": "^25.1.0",
     "ts-jest": "^25.2.1"
   },
   "dependencies": {
     "typescript": "~3.8.3"
-  },
-  "jest": {
-    "collectCoverage": true,
-    "coverageReporters": [
-      "lcov",
-      "text"
-    ],
-    "modulePathIgnorePatterns": [
-      "<rootDir>/dist/"
-    ],
-    "transform": {
-      "\\.ts$": "ts-jest"
-    }
   }
 }

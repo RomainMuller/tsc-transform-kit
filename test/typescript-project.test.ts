@@ -62,6 +62,9 @@ describe('examples', () => {
   });
 
   test('"basic" can be watched the UpcasingTransformer', async () => {
+    // This can be slow on CI/CD configurations
+    jest.setTimeout(15_000);
+
     return withTemporaryCopy(resolve(examplesDir, 'basic'), async root => {
       const project = new TypeScriptProject(resolve(root, 'tsconfig.json'));
       project.transformers.addTransformer(new UpcasingTransformer());

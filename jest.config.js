@@ -10,6 +10,7 @@ module.exports = {
     'lcov',
     'text',
   ],
+  errorOnDeprecated: true,
   modulePathIgnorePatterns: [
     '<rootDir>/dist/',
   ],

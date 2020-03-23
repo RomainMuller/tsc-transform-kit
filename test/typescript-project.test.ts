@@ -86,11 +86,14 @@ describe('examples', () => {
       // Initial compilation has already hapened...
       expect(projectCount).toBeGreaterThan(0);
       expect(generated).toBe(projectCount);
+
+      await new Promise(ok => setTimeout(ok, 1_000));
+
       return expect(promisify(readFile)(resolve(root, 'dist', 'index.js'), { encoding: 'utf-8' }))
         .resolves.toContain('MAIN')
         .then(
           () => new Promise((ok, ko) => {
-            setTimeout(() => ko(new Error('Test timed out after 14 seconds!')), 14_000);
+            setTimeout(() => ko(new Error('Test timed out after 14 seconds!')), 10_000);
 
             // Register hook to inspect incremental build result...
             project.once(BuildEvent.AfterProject, () => {
@@ -102,7 +105,7 @@ describe('examples', () => {
             Promise.all([
               promisify(writeFile)(resolve(root, 'dist', 'ignore.d.ts'), 'export const ignore = undefined;'),
               promisify(writeFile)(resolve(root, '_ignore.ts'), 'export const _ignore = undefined;'),
-            ]).then(() => undefined, ko);
+            ]).then(() => null, ko);
           }),
           err => Promise.reject(err),
         ).finally(() => watch.stop());

@@ -17,7 +17,7 @@ export interface IWatch {
 export class Watch implements IWatch {
   /* eslint-disable @typescript-eslint/explicit-member-accessibility */
   readonly #host: ts.WatchHost;
-  readonly #performBuild: () => void;
+  readonly #performBuild: (fileName: string) => void;
   readonly #watchers = new Map<string, ts.FileWatcher>();
   #stopped = false;
   /* eslint-enable @typescript-eslint/explicit-member-accessibility */
@@ -25,7 +25,7 @@ export class Watch implements IWatch {
   public constructor(
     private readonly system: ts.System,
     callback: (watch: Watch) => void,
-    private readonly pollingInterval: number = 250,
+    private readonly pollingInterval?: number,
   ) {
     if (system.watchDirectory == null || system.watchFile == null) {
       throw new Error('Unable to create Watch: system does not support watchDirectory and/or watchFile');
@@ -38,7 +38,10 @@ export class Watch implements IWatch {
       watchDirectory: system.watchDirectory,
       watchFile: system.watchFile,
     };
-    this.#performBuild = () => this.#stopped ? undefined : callback(this);
+    this.#performBuild = () => {
+      if (this.#stopped) { return; }
+      callback(this);
+    };
   }
 
   public watchConfigFile(path: ts.ResolvedConfigFileName) {
@@ -76,12 +79,15 @@ export class Watch implements IWatch {
         this.#host.watchDirectory(
           path,
           fileName => {
-            // We don't care about stuff that's not a source file
-            if (!isSupportedSourceFile(fileName, config)) { return; }
-            // We don't care about stuff that's an output file
-            if (isOutputFile(fileName, config)) { return; }
+            // If fileName is path, it's not a file, so below checks are pointless.
+            if (fileName !== path) {
+              // We don't care about stuff that's not a source file
+              if (!isSupportedSourceFile(fileName, config)) { return; }
+              // We don't care about stuff that's an output file
+              if (isOutputFile(fileName, config)) { return; }
+            }
 
-            this.#performBuild();
+            this.#performBuild(fileName);
           },
           (flags & ts.WatchDirectoryFlags.Recursive) !== 0,
           watchOptions,

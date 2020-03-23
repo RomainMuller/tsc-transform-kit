@@ -87,8 +87,6 @@ describe('examples', () => {
       expect(projectCount).toBeGreaterThan(0);
       expect(generated).toBe(projectCount);
 
-      await new Promise(ok => setTimeout(ok, 1_000));
-
       return expect(promisify(readFile)(resolve(root, 'dist', 'index.js'), { encoding: 'utf-8' }))
         .resolves.toContain('MAIN')
         .then(

@@ -90,6 +90,8 @@ describe('examples', () => {
         .resolves.toContain('MAIN')
         .then(
           () => new Promise((ok, ko) => {
+            setTimeout(() => ko(new Error('Test timed out after 14 seconds!')), 14_000);
+
             // Register hook to inspect incremental build result...
             project.once(BuildEvent.AfterProject, () => {
               expect(promisify(readFile)(resolve(root, 'dist', '_ignore.js'), { encoding: 'utf-8' }))

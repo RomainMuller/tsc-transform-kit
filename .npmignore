@@ -1,7 +1,8 @@
 *
 
 !/dist/**/*
-!/test/**/*
 
 /dist/test
+
 *.tsbuildinfo
+jest.config.js

@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "dist"
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["dist/**/*.ts"],
+  "references": [{ "path": "../bar" }],
+}

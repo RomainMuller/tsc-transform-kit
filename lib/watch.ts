@@ -25,7 +25,7 @@ export class Watch implements IWatch {
   public constructor(
     private readonly system: ts.System,
     callback: (watch: Watch) => void,
-    private readonly pollingInterval?: number,
+    private readonly pollingInterval: number = 250,
   ) {
     if (system.watchDirectory == null || system.watchFile == null) {
       throw new Error('Unable to create Watch: system does not support watchDirectory and/or watchFile');

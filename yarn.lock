@@ -2536,16 +2536,16 @@ jest-util@^25.2.0, jest-util@^25.2.1:
     make-dir "^3.0.0"
 
 jest-validate@^25.2.0:
-  version "25.2.0"
-  resolved "https://registry.yarnpkg.com/jest-validate/-/jest-validate-25.2.0.tgz#2ea5ec81b0c4dec5454bcc4834c68f60c42a9b8c"
-  integrity sha512-FcueQUXWhnD45DJFhDux3FQDrXcLLFvPU6mNQimu1FCOblWxiqDPc9GzRc8dvvU5U8F+j6ohtd+vH/BkjZ1M/g==
+  version "25.2.1"
+  resolved "https://registry.yarnpkg.com/jest-validate/-/jest-validate-25.2.1.tgz#a07a4e6697fc58e6ea31c03de541af4d0a475fbc"
+  integrity sha512-vGtNFPyvylFfTFFfptzqCy5S3cP/N5JJVwm8gsXeZq8jMmvUngfWtuw+Tr5Wjo+dqOle23td8BE0ruGnsONDmw==
   dependencies:
-    "@jest/types" "^25.2.0"
+    "@jest/types" "^25.2.1"
     camelcase "^5.3.1"
     chalk "^3.0.0"
-    jest-get-type "^25.1.0"
+    jest-get-type "^25.2.1"
     leven "^3.1.0"
-    pretty-format "^25.2.0"
+    pretty-format "^25.2.1"
 
 jest-watcher@^25.2.0:
   version "25.2.0"

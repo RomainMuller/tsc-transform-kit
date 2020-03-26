@@ -2513,15 +2513,15 @@ jest-validate@^25.2.0, jest-validate@^25.2.1:
     pretty-format "^25.2.1"
 
 jest-watcher@^25.2.0:
-  version "25.2.0"
-  resolved "https://registry.yarnpkg.com/jest-watcher/-/jest-watcher-25.2.0.tgz#5cb37355602b743eda565227ce2252bdc0ce92ee"
-  integrity sha512-jfUrHJfr4OEhJ0oGOqzH5yAXsUrtFWPalV2o6EI72T3Kp/mY3roUj/8RMmi7md/fL2GJ1BbcWzsQuaXuDRhJ0A==
+  version "25.2.1"
+  resolved "https://registry.yarnpkg.com/jest-watcher/-/jest-watcher-25.2.1.tgz#605aeef37ee4ce867f2f58485fdb9eea0f8cb369"
+  integrity sha512-m35rftCYE2EEh01+IIpQMpdB9VXBAjITZvgP4drd/LI3JEJIdd0Pkf/qJZ3oiMQJdqmuwYcTqE+BL40MxVv83Q==
   dependencies:
-    "@jest/test-result" "^25.2.0"
-    "@jest/types" "^25.2.0"
+    "@jest/test-result" "^25.2.1"
+    "@jest/types" "^25.2.1"
     ansi-escapes "^4.2.1"
     chalk "^3.0.0"
-    jest-util "^25.2.0"
+    jest-util "^25.2.1"
     string-length "^3.1.0"
 
 jest-worker@^25.2.0, jest-worker@^25.2.1:

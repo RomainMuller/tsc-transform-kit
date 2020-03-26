@@ -2281,15 +2281,15 @@ jest-docblock@^25.2.0:
     detect-newline "^3.0.0"
 
 jest-each@^25.2.1:
-  version "25.2.1"
-  resolved "https://registry.yarnpkg.com/jest-each/-/jest-each-25.2.1.tgz#d96b4fc0c035fcddb852f19da42ea241b1943999"
-  integrity sha512-2vWAaf11IJsSwkEzGph3un4OMSG4v/3hpM2UqJdeU3peGUgUSn75TlXZGQnT0smbnAr4eE+URW1OpE8U9wl0TA==
+  version "25.2.3"
+  resolved "https://registry.yarnpkg.com/jest-each/-/jest-each-25.2.3.tgz#64067ba1508ebbd07e9b126c173ab371e8e6309d"
+  integrity sha512-RTlmCjsBDK2c9T5oO4MqccA3/5Y8BUtiEy7OOQik1iyCgdnNdHbI0pNEpyapZPBG0nlvZ4mIu7aY6zNUvLraAQ==
   dependencies:
-    "@jest/types" "^25.2.1"
+    "@jest/types" "^25.2.3"
     chalk "^3.0.0"
     jest-get-type "^25.2.1"
-    jest-util "^25.2.1"
-    pretty-format "^25.2.1"
+    jest-util "^25.2.3"
+    pretty-format "^25.2.3"
 
 jest-environment-jsdom@^25.2.1:
   version "25.2.1"

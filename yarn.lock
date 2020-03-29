@@ -1469,7 +1469,7 @@ expand-brackets@^2.1.4:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-expect@^25.2.3, expect@^25.2.4:
+expect@^25.2.4:
   version "25.2.4"
   resolved "https://registry.yarnpkg.com/expect/-/expect-25.2.4.tgz#b66e0777c861034ebc21730bb34e1839d5d46806"
   integrity sha512-hfuPhPds4yOsZtIw4kwAg70r0hqGmpqekgA+VX7pf/3wZ6FY+xIOXZhNsPMMMsspYG/YIsbAiwqsdnD4Ht+bCA==
@@ -2295,30 +2295,7 @@ jest-haste-map@^25.2.3:
   optionalDependencies:
     fsevents "^2.1.2"
 
-jest-jasmine2@^25.2.3:
-  version "25.2.3"
-  resolved "https://registry.yarnpkg.com/jest-jasmine2/-/jest-jasmine2-25.2.3.tgz#a824c5dbe383c63d243aab5e64cc85ab65f87598"
-  integrity sha512-x9PEGPFdnkSwJj1UG4QxG9JxFdyP8fuJ/UfKXd/eSpK8w9x7MP3VaQDuPQF0UQhCT0YeOITEPkQyqS+ptt0suA==
-  dependencies:
-    "@babel/traverse" "^7.1.0"
-    "@jest/environment" "^25.2.3"
-    "@jest/source-map" "^25.2.1"
-    "@jest/test-result" "^25.2.3"
-    "@jest/types" "^25.2.3"
-    chalk "^3.0.0"
-    co "^4.6.0"
-    expect "^25.2.3"
-    is-generator-fn "^2.0.0"
-    jest-each "^25.2.3"
-    jest-matcher-utils "^25.2.3"
-    jest-message-util "^25.2.3"
-    jest-runtime "^25.2.3"
-    jest-snapshot "^25.2.3"
-    jest-util "^25.2.3"
-    pretty-format "^25.2.3"
-    throat "^5.0.0"
-
-jest-jasmine2@^25.2.4:
+jest-jasmine2@^25.2.3, jest-jasmine2@^25.2.4:
   version "25.2.4"
   resolved "https://registry.yarnpkg.com/jest-jasmine2/-/jest-jasmine2-25.2.4.tgz#5f77de83e1027f0c7588137055a80da773872374"
   integrity sha512-juoKrmNmLwaheNbAg71SuUF9ovwUZCFNTpKVhvCXWk+SSeORcIUMptKdPCoLXV3D16htzhTSKmNxnxSk4SrTjA==

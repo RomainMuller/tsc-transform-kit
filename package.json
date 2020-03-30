@@ -41,7 +41,7 @@
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-jest": "^23.8.2",
     "jest": "^25.2.4",
-    "ts-jest": "^25.2.1"
+    "ts-jest": "^25.3.0"
   },
   "dependencies": {
     "typescript": "~3.8.3"

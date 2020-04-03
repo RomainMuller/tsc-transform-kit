@@ -44,7 +44,7 @@ export class Watch implements IWatch {
     };
   }
 
-  public watchConfigFile(path: ts.ResolvedConfigFileName) {
+  public watchConfigFile(path: string) {
     const config = parseConfiguration(path, this.system);
     if (!this.#watchers.has(path)) {
       this.#watchers.set(
@@ -180,7 +180,7 @@ function isOutputFile(path: string, config: ts.ParsedCommandLine): boolean {
  *
  * @returns the parsed command line.
  */
-function parseConfiguration(path: ts.ResolvedConfigFileName, system: ts.System): ts.ParsedCommandLine | undefined {
+function parseConfiguration(path: string, system: ts.System): ts.ParsedCommandLine | undefined {
   return ts.getParsedCommandLineOfConfigFile(path, {}, {
     fileExists: system.fileExists,
     getCurrentDirectory: system.getCurrentDirectory,

@@ -1,6 +1,7 @@
 *
 
 !/dist/**/*
+!/bin/tsc-tk
 
 /dist/test
 

@@ -11,7 +11,7 @@
     "forceConsistentCasingInFileNames": true,
     "importHelpers": false,
     "incremental": true,
-    "lib": ["ES2018"],
+    "lib": ["es2018"],
     "module": "CommonJS",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
@@ -21,6 +21,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "outDir": "dist",
+    "resolveJsonModule": true,
     "sourceMap": true,
     "strict": true,
     "stripInternal": true,
@@ -29,6 +30,7 @@
   },
   "include": [
     "**/*.ts",
+    "package.json"
   ],
   "exclude": [
     "dist/**",

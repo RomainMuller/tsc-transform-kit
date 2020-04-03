@@ -5,6 +5,9 @@
   "type": "commonjs",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
+  "bin": {
+    "tsc-tk": "bin/tsc-tk"
+  },
   "scripts": {
     "build": "tsc --build && npm run lint",
     "build:watch": "tsc --build --watch",
@@ -44,6 +47,7 @@
     "ts-jest": "^25.3.0"
   },
   "dependencies": {
+    "commander": "^5.0.0",
     "typescript": "~3.8.3"
   }
 }

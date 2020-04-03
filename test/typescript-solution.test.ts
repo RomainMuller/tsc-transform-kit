@@ -2,7 +2,7 @@ import { readdirSync, readFile, writeFile } from 'fs';
 import { resolve } from 'path';
 import * as ts from 'typescript';
 import { promisify } from 'util';
-import { BuildEvent, TypeScriptProject, TransformerPhase, Transformer, TransformerContext } from '../lib';
+import { BuildEvent, TypeScriptSolution, TransformerPhase, Transformer, TransformerContext } from '../lib';
 import { withTemporaryCopy } from './utils';
 
 describe('examples', () => {
@@ -10,7 +10,7 @@ describe('examples', () => {
   for (const example of readdirSync(examplesDir)) {
     test(`"${example}" can be built wihout transforms`, () => {
       return withTemporaryCopy(resolve(examplesDir, example), async (copyRoot) => {
-        const project = new TypeScriptProject(resolve(copyRoot, 'tsconfig.json'));
+        const project = new TypeScriptSolution(resolve(copyRoot, 'tsconfig.json'));
 
         // Count how many projects get processed
         let projectCount = 0;
@@ -36,7 +36,7 @@ describe('examples', () => {
 
   test('"basic" can be built with the UpcasingTransformer', async () => {
     return withTemporaryCopy(resolve(examplesDir, 'basic'), async copyRoot => {
-      const project = new TypeScriptProject(resolve(copyRoot, 'tsconfig.json'));
+      const project = new TypeScriptSolution(resolve(copyRoot, 'tsconfig.json'));
       project.transformers.addTransformer(new UpcasingTransformer());
 
       // Count how many projects get processed
@@ -66,7 +66,7 @@ describe('examples', () => {
     jest.setTimeout(15_000);
 
     return withTemporaryCopy(resolve(examplesDir, 'basic'), async root => {
-      const project = new TypeScriptProject(resolve(root, 'tsconfig.json'));
+      const project = new TypeScriptSolution(resolve(root, 'tsconfig.json'));
       project.transformers.addTransformer(new UpcasingTransformer());
 
       // Count how many projects get processed
@@ -112,7 +112,7 @@ describe('examples', () => {
 });
 
 test('throws if tsconfig.json does not exist', () => {
-  expect(() => new TypeScriptProject('/one/can/expect/this/is/not/actually/a/file'))
+  expect(() => new TypeScriptSolution('/one/can/expect/this/is/not/actually/a/file'))
     .toThrow(/does not exist!/);
 });
 

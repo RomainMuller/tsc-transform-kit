@@ -47,7 +47,7 @@
     "ts-jest": "^25.4.0"
   },
   "dependencies": {
-    "commander": "^5.0.0",
+    "commander": "^5.1.0",
     "typescript": "~3.8.3"
   }
 }

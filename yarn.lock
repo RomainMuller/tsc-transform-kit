@@ -416,6 +416,17 @@
     jest-runner "^25.5.0"
     jest-runtime "^25.5.0"
 
+"@jest/test-sequencer@^25.5.1":
+  version "25.5.1"
+  resolved "https://registry.yarnpkg.com/@jest/test-sequencer/-/test-sequencer-25.5.1.tgz#70ab0f73a38474e004662857a067c9fe5cc64918"
+  integrity sha512-XcnGwXFfs194AKO3M8xRsDLwo72LzuLuhOjd9e7AaBe5kEZk8fbGRxE7pQSqHyL49xV/NCCXUtBJ9lDqt1NLnw==
+  dependencies:
+    "@jest/test-result" "^25.5.0"
+    graceful-fs "^4.2.4"
+    jest-haste-map "^25.5.1"
+    jest-runner "^25.5.1"
+    jest-runtime "^25.5.1"
+
 "@jest/transform@^25.5.0":
   version "25.5.0"
   resolved "https://registry.yarnpkg.com/@jest/transform/-/transform-25.5.0.tgz#a0f3719a1e158be442a99988d3134d577cb1c1be"
@@ -429,6 +440,28 @@
     fast-json-stable-stringify "^2.0.0"
     graceful-fs "^4.2.4"
     jest-haste-map "^25.5.0"
+    jest-regex-util "^25.2.6"
+    jest-util "^25.5.0"
+    micromatch "^4.0.2"
+    pirates "^4.0.1"
+    realpath-native "^2.0.0"
+    slash "^3.0.0"
+    source-map "^0.6.1"
+    write-file-atomic "^3.0.0"
+
+"@jest/transform@^25.5.1":
+  version "25.5.1"
+  resolved "https://registry.yarnpkg.com/@jest/transform/-/transform-25.5.1.tgz#0469ddc17699dd2bf985db55fa0fb9309f5c2db3"
+  integrity sha512-Y8CEoVwXb4QwA6Y/9uDkn0Xfz0finGkieuV0xkdF9UtZGJeLukD5nLkaVrVsODB1ojRWlaoD0AJZpVHCSnJEvg==
+  dependencies:
+    "@babel/core" "^7.1.0"
+    "@jest/types" "^25.5.0"
+    babel-plugin-istanbul "^6.0.0"
+    chalk "^3.0.0"
+    convert-source-map "^1.4.0"
+    fast-json-stable-stringify "^2.0.0"
+    graceful-fs "^4.2.4"
+    jest-haste-map "^25.5.1"
     jest-regex-util "^25.2.6"
     jest-util "^25.5.0"
     micromatch "^4.0.2"
@@ -498,6 +531,13 @@
   resolved "https://registry.yarnpkg.com/@types/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#1ee30d79544ca84d68d4b3cdb0af4f205663dd2d"
   integrity sha512-OCutwjDZ4aFS6PB1UZ988C4YgwlBHJd6wCeQqaLdmadZ/7e+w79+hbMUFC1QXDNCmdyoRfAFdm0RypzwR+Qpag==
 
+"@types/graceful-fs@^4.1.2":
+  version "4.1.3"
+  resolved "https://registry.yarnpkg.com/@types/graceful-fs/-/graceful-fs-4.1.3.tgz#039af35fe26bec35003e8d86d2ee9c586354348f"
+  integrity sha512-AiHRaEB50LQg0pZmm659vNBb9f4SJ0qrAnteuzhSeAUcJKxoYgEnprg/83kppCnc2zvtCKbdZry1a5pVY3lOTQ==
+  dependencies:
+    "@types/node" "*"
+
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0", "@types/istanbul-lib-coverage@^2.0.1":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@types/istanbul-lib-coverage/-/istanbul-lib-coverage-2.0.1.tgz#42995b446db9a48a11a07ec083499a860e9138ff"
@@ -535,6 +575,11 @@
   version "0.0.29"
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
   integrity sha1-7ihweulOEdK4J7y+UnC86n8+ce4=
+
+"@types/node@*":
+  version "13.13.4"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-13.13.4.tgz#1581d6c16e3d4803eb079c87d4ac893ee7501c2c"
+  integrity sha512-x26ur3dSXgv5AwKS0lNfbjpCakGIduWU1DU91Zz58ONRWrIKGunmZBNv4P7N+e27sJkiGDsw/3fT4AtsqQBrBA==
 
 "@types/node@^10.17.21":
   version "10.17.21"
@@ -799,6 +844,20 @@ babel-jest@^25.5.0:
   integrity sha512-8AfVNU7MEMsa+MjbY/CmwrGuQdplZ/+GkeWJDpRPm4C4wJZf937Pd9KgWU3NbnWEcYvIiqR15wy0U6C028kTWw==
   dependencies:
     "@jest/transform" "^25.5.0"
+    "@jest/types" "^25.5.0"
+    "@types/babel__core" "^7.1.7"
+    babel-plugin-istanbul "^6.0.0"
+    babel-preset-jest "^25.5.0"
+    chalk "^3.0.0"
+    graceful-fs "^4.2.4"
+    slash "^3.0.0"
+
+babel-jest@^25.5.1:
+  version "25.5.1"
+  resolved "https://registry.yarnpkg.com/babel-jest/-/babel-jest-25.5.1.tgz#bc2e6101f849d6f6aec09720ffc7bc5332e62853"
+  integrity sha512-9dA9+GmMjIzgPnYtkhBg73gOo/RHqPmLruP3BaGL4KEX3Dwz6pI8auSN8G8+iuEG90+GSswyKvslN+JYSaacaQ==
+  dependencies:
+    "@jest/transform" "^25.5.1"
     "@jest/types" "^25.5.0"
     "@types/babel__core" "^7.1.7"
     babel-plugin-istanbul "^6.0.0"
@@ -2311,6 +2370,31 @@ jest-config@^25.5.0:
     pretty-format "^25.5.0"
     realpath-native "^2.0.0"
 
+jest-config@^25.5.1:
+  version "25.5.1"
+  resolved "https://registry.yarnpkg.com/jest-config/-/jest-config-25.5.1.tgz#579eac3e336de1c849830538ef5b51d13ba89228"
+  integrity sha512-doUA9VEge7u28PvZNe7qkqG/NUAAObqLv8faMsaEiY2koZFtSTtcwCRoQQXsBU6w3lRRTOSg4LLchZERZLbOfA==
+  dependencies:
+    "@babel/core" "^7.1.0"
+    "@jest/test-sequencer" "^25.5.1"
+    "@jest/types" "^25.5.0"
+    babel-jest "^25.5.1"
+    chalk "^3.0.0"
+    deepmerge "^4.2.2"
+    glob "^7.1.1"
+    graceful-fs "^4.2.4"
+    jest-environment-jsdom "^25.5.0"
+    jest-environment-node "^25.5.0"
+    jest-get-type "^25.2.6"
+    jest-jasmine2 "^25.5.1"
+    jest-regex-util "^25.2.6"
+    jest-resolve "^25.5.1"
+    jest-util "^25.5.0"
+    jest-validate "^25.5.0"
+    micromatch "^4.0.2"
+    pretty-format "^25.5.0"
+    realpath-native "^2.0.0"
+
 jest-diff@^25.2.1, jest-diff@^25.5.0:
   version "25.5.0"
   resolved "https://registry.yarnpkg.com/jest-diff/-/jest-diff-25.5.0.tgz#1dd26ed64f96667c068cef026b677dfa01afcfa9"
@@ -2387,10 +2471,30 @@ jest-haste-map@^25.5.0:
   optionalDependencies:
     fsevents "^2.1.2"
 
-jest-jasmine2@^25.5.0:
-  version "25.5.0"
-  resolved "https://registry.yarnpkg.com/jest-jasmine2/-/jest-jasmine2-25.5.0.tgz#55f5a0a264a200bc8b9fa21a5e909dbc2befd084"
-  integrity sha512-e66pVthiFQairNJddx7xoENQV9q3H8pNFj4SlCRb2/hi/ztVeO7RY3h41jpL/OZ5R4ewar36quJebL16jNoliQ==
+jest-haste-map@^25.5.1:
+  version "25.5.1"
+  resolved "https://registry.yarnpkg.com/jest-haste-map/-/jest-haste-map-25.5.1.tgz#1df10f716c1d94e60a1ebf7798c9fb3da2620943"
+  integrity sha512-dddgh9UZjV7SCDQUrQ+5t9yy8iEgKc1AKqZR9YDww8xsVOtzPQSMVLDChc21+g29oTRexb9/B0bIlZL+sWmvAQ==
+  dependencies:
+    "@jest/types" "^25.5.0"
+    "@types/graceful-fs" "^4.1.2"
+    anymatch "^3.0.3"
+    fb-watchman "^2.0.0"
+    graceful-fs "^4.2.4"
+    jest-serializer "^25.5.0"
+    jest-util "^25.5.0"
+    jest-worker "^25.5.0"
+    micromatch "^4.0.2"
+    sane "^4.0.3"
+    walker "^1.0.7"
+    which "^2.0.2"
+  optionalDependencies:
+    fsevents "^2.1.2"
+
+jest-jasmine2@^25.5.0, jest-jasmine2@^25.5.1:
+  version "25.5.1"
+  resolved "https://registry.yarnpkg.com/jest-jasmine2/-/jest-jasmine2-25.5.1.tgz#3e5767945ebadd3bf5f171e5f02e30aca25c586f"
+  integrity sha512-CydSULT9iqLX55OofjjtinYWHlC1HT3FijkelOZzUPwq2EN8aNAAYGdyaKjXEHJfhKmVD531GxA2F4q1Phmaxw==
   dependencies:
     "@babel/traverse" "^7.1.0"
     "@jest/environment" "^25.5.0"
@@ -2404,8 +2508,8 @@ jest-jasmine2@^25.5.0:
     jest-each "^25.5.0"
     jest-matcher-utils "^25.5.0"
     jest-message-util "^25.5.0"
-    jest-runtime "^25.5.0"
-    jest-snapshot "^25.5.0"
+    jest-runtime "^25.5.1"
+    jest-snapshot "^25.5.1"
     jest-util "^25.5.0"
     pretty-format "^25.5.0"
     throat "^5.0.0"
@@ -2468,7 +2572,7 @@ jest-resolve-dependencies@^25.5.0:
     jest-regex-util "^25.2.6"
     jest-snapshot "^25.5.0"
 
-jest-resolve@^25.5.0:
+jest-resolve@^25.5.0, jest-resolve@^25.5.1:
   version "25.5.1"
   resolved "https://registry.yarnpkg.com/jest-resolve/-/jest-resolve-25.5.1.tgz#0e6fbcfa7c26d2a5fe8f456088dc332a79266829"
   integrity sha512-Hc09hYch5aWdtejsUZhA+vSzcotf7fajSlPA6EZPE1RmPBAD39XtJhvHWFStid58iit4IPDLI/Da4cwdDmAHiQ==
@@ -2508,17 +2612,42 @@ jest-runner@^25.5.0:
     source-map-support "^0.5.6"
     throat "^5.0.0"
 
-jest-runtime@^25.5.0:
-  version "25.5.0"
-  resolved "https://registry.yarnpkg.com/jest-runtime/-/jest-runtime-25.5.0.tgz#d1df2c601710974001f7095ab25c865ce5882cbc"
-  integrity sha512-s7TqawKRjaNaE82PjXxDYVhjrMQqjTiiY63N1jFcYtX2xtg05xsgCBk0ls6NMR3fy3AtvbPIQjD3FpssH01l6A==
+jest-runner@^25.5.1:
+  version "25.5.1"
+  resolved "https://registry.yarnpkg.com/jest-runner/-/jest-runner-25.5.1.tgz#e035b7e341c31278868a86e360e752d014945403"
+  integrity sha512-CBYKwUENc5ya1sJcFPyp5sMl3Otbj9lfulVP15gcLPsfRqk5cA72Qhm3Y5hdULs6WvsP8ATdihYPMzrESJJHFw==
+  dependencies:
+    "@jest/console" "^25.5.0"
+    "@jest/environment" "^25.5.0"
+    "@jest/test-result" "^25.5.0"
+    "@jest/types" "^25.5.0"
+    chalk "^3.0.0"
+    exit "^0.1.2"
+    graceful-fs "^4.2.4"
+    jest-config "^25.5.1"
+    jest-docblock "^25.3.0"
+    jest-haste-map "^25.5.1"
+    jest-jasmine2 "^25.5.1"
+    jest-leak-detector "^25.5.0"
+    jest-message-util "^25.5.0"
+    jest-resolve "^25.5.1"
+    jest-runtime "^25.5.1"
+    jest-util "^25.5.0"
+    jest-worker "^25.5.0"
+    source-map-support "^0.5.6"
+    throat "^5.0.0"
+
+jest-runtime@^25.5.0, jest-runtime@^25.5.1:
+  version "25.5.1"
+  resolved "https://registry.yarnpkg.com/jest-runtime/-/jest-runtime-25.5.1.tgz#eb25667050da64c0d9fb5cc3aaa89cfd61d0803f"
+  integrity sha512-C8neT+c1k/Sr0HlsLJqZgQmmBI5Plyh3FHfO5VF/K670/V/gAN375WQwwIzbTevK3nbOl7NzuKxS2A3Ps5SLgg==
   dependencies:
     "@jest/console" "^25.5.0"
     "@jest/environment" "^25.5.0"
     "@jest/globals" "^25.5.0"
     "@jest/source-map" "^25.5.0"
     "@jest/test-result" "^25.5.0"
-    "@jest/transform" "^25.5.0"
+    "@jest/transform" "^25.5.1"
     "@jest/types" "^25.5.0"
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
@@ -2526,13 +2655,13 @@ jest-runtime@^25.5.0:
     exit "^0.1.2"
     glob "^7.1.3"
     graceful-fs "^4.2.4"
-    jest-config "^25.5.0"
-    jest-haste-map "^25.5.0"
+    jest-config "^25.5.1"
+    jest-haste-map "^25.5.1"
     jest-message-util "^25.5.0"
     jest-mock "^25.5.0"
     jest-regex-util "^25.2.6"
-    jest-resolve "^25.5.0"
-    jest-snapshot "^25.5.0"
+    jest-resolve "^25.5.1"
+    jest-snapshot "^25.5.1"
     jest-util "^25.5.0"
     jest-validate "^25.5.0"
     realpath-native "^2.0.0"
@@ -2547,10 +2676,10 @@ jest-serializer@^25.5.0:
   dependencies:
     graceful-fs "^4.2.4"
 
-jest-snapshot@^25.5.0:
-  version "25.5.0"
-  resolved "https://registry.yarnpkg.com/jest-snapshot/-/jest-snapshot-25.5.0.tgz#0344dc1b8a949aeffefa45075508bb6277ee07d1"
-  integrity sha512-DveG7ZRn6HEmpDxpZXXR/U5x/aKG5N88tdaB+CH0d5jpb9tuvLMZn8rGZeBiLPS0RCO5VIlu8HL/WtY6wMk0QA==
+jest-snapshot@^25.5.0, jest-snapshot@^25.5.1:
+  version "25.5.1"
+  resolved "https://registry.yarnpkg.com/jest-snapshot/-/jest-snapshot-25.5.1.tgz#1a2a576491f9961eb8d00c2e5fd479bc28e5ff7f"
+  integrity sha512-C02JE1TUe64p2v1auUJ2ze5vcuv32tkv9PyhEb318e8XOKF7MOyXdJ7kdjbvrp3ChPLU2usI7Rjxs97Dj5P0uQ==
   dependencies:
     "@babel/types" "^7.0.0"
     "@jest/types" "^25.5.0"
@@ -2562,7 +2691,7 @@ jest-snapshot@^25.5.0:
     jest-get-type "^25.2.6"
     jest-matcher-utils "^25.5.0"
     jest-message-util "^25.5.0"
-    jest-resolve "^25.5.0"
+    jest-resolve "^25.5.1"
     make-dir "^3.0.0"
     natural-compare "^1.4.0"
     pretty-format "^25.5.0"

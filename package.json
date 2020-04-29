@@ -43,7 +43,7 @@
     "eslint-import-resolver-typescript": "^2.0.0",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-jest": "^23.8.2",
-    "jest": "^25.5.0",
+    "jest": "^25.5.1",
     "ts-jest": "^25.4.0"
   },
   "dependencies": {

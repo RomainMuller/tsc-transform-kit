@@ -48,6 +48,6 @@
   },
   "dependencies": {
     "commander": "^5.1.0",
-    "typescript": "~3.9.2"
+    "typescript": "~3.9.3"
   }
 }

@@ -44,7 +44,7 @@
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jest": "^23.18.0",
     "jest": "^26.1.0",
-    "ts-jest": "^25.5.1"
+    "ts-jest": "^26.2.0"
   },
   "dependencies": {
     "commander": "^6.0.0",

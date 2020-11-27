@@ -1,4 +1,4 @@
-import * as ts from 'typescript';
+import ts from 'typescript';
 
 /**
  * Transformers encapsulate the logic to transform TypeScript AST nodes during
@@ -16,9 +16,9 @@ export abstract class Transformer {
   public transform<T extends ts.Node>(node: T, context: TransformerContext): T {
     return ts.visitNode(
       node,
-      node => this.visit(node, context),
-      this.isValidNode && (node => this.isValidNode!(node, context)),
-      this.liftNodeArray && (node => this.liftNodeArray!<T>(node, context)),
+      (node) => this.visit(node, context),
+      this.isValidNode && ((node) => this.isValidNode!(node, context)),
+      this.liftNodeArray && ((node) => this.liftNodeArray!<T>(node, context)),
     );
   }
 
@@ -31,11 +31,14 @@ export abstract class Transformer {
    *
    * @returns the result of the children transformation.
    */
-  public transformChildren<T extends ts.Node>(node: T, context: TransformerContext): T {
+  public transformChildren<T extends ts.Node>(
+    node: T,
+    context: TransformerContext,
+  ): T {
     return ts.visitEachChild(
       node,
-      node => this.visit(node, context),
-      context.context
+      (node) => this.visit(node, context),
+      context.context,
     );
   }
 
@@ -49,7 +52,10 @@ export abstract class Transformer {
    *
    * @returns the result of the transformation.
    */
-  public abstract visit<T extends ts.Node>(node: T, context: TransformerContext): ts.VisitResult<T>;
+  public abstract visit<T extends ts.Node>(
+    node: T,
+    context: TransformerContext,
+  ): ts.VisitResult<T>;
 
   /**
    * An optional test to determine whether a node is valid or not.
@@ -59,7 +65,10 @@ export abstract class Transformer {
    *
    * @returns `true` if the node is valid.
    */
-  public readonly isValidNode?: (node: ts.Node, context: TransformerContext) => boolean;
+  public readonly isValidNode?: (
+    node: ts.Node,
+    context: TransformerContext,
+  ) => boolean;
 
   /**
    * An optional function to lift a NodeArray into a valid Node.
@@ -69,7 +78,10 @@ export abstract class Transformer {
    *
    * @returns the lifted node.
    */
-  public readonly liftNodeArray?: <T extends ts.Node>(nodes: ts.NodeArray<ts.Node>, context: TransformerContext) => T;
+  public readonly liftNodeArray?: <T extends ts.Node>(
+    nodes: ts.NodeArray<ts.Node>,
+    context: TransformerContext,
+  ) => T;
 }
 
 /**

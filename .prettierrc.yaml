@@ -1,4 +1,6 @@
 ---
+parser: typescript
+
 bracketSpacing: true
 semi: true
 singleQuote: true
@@ -6,7 +8,7 @@ tabWidth: 2
 trailingComma: all
 
 overrides:
-  - files: "*.md"
+  - files: '*.md'
     options:
       printWidth: 120
       proseWrap: always

@@ -9,6 +9,7 @@ plugins:
   - '@typescript-eslint'
   - import
   - jest
+  - prettier
 
 parser: '@typescript-eslint/parser'
 parserOptions:
@@ -25,7 +26,6 @@ settings:
       project: ./tsconfig.json
 
 rules:
-
   '@typescript-eslint/adjacent-overload-signatures':
     - error
 
@@ -45,10 +45,6 @@ rules:
   '@typescript-eslint/explicit-member-accessibility':
     - error
 
-  '@typescript-eslint/indent':
-    - error
-    - 2
-
   '@typescript-eslint/member-delimiter-style':
     - error
     - multiline:
@@ -61,12 +57,6 @@ rules:
   '@typescript-eslint/no-empty-function':
     - error
     - allow: [constructors]
-
-  '@typescript-eslint/no-extra-parens':
-    - error
-    - all
-    - conditionalAssign: false
-      nestedBinaryExpressions: false
 
   '@typescript-eslint/no-floating-promises':
     - error
@@ -144,8 +134,8 @@ rules:
   'import/no-extraneous-dependencies':
     - error
     - devDependencies: ['**/test/**'] # Only allow importing devDependencies from tests
-      optionalDependencies: false     # Disallow importing optional dependencies (those shouldn't be used here)
-      peerDependencies: false         # Disallow importing peer dependencies (those shouldn't be used here)
+      optionalDependencies: false # Disallow importing optional dependencies (those shouldn't be used here)
+      peerDependencies: false # Disallow importing peer dependencies (those shouldn't be used here)
 
   'import/no-unresolved':
     - error
@@ -215,6 +205,9 @@ rules:
     - error
 
   'prefer-template':
+    - error
+
+  'prettier/prettier':
     - error
 
   'template-curly-spacing':

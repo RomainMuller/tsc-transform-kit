@@ -10,7 +10,8 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
   private readonly createProgram?: ts.CreateProgram<T>;
 
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-  readonly #reportDiagnostic: ts.DiagnosticReporter = diag => this.emit(BuildEvent.Diagnostic, diag);
+  readonly #reportDiagnostic: ts.DiagnosticReporter = (diag) =>
+    this.emit(BuildEvent.Diagnostic, diag);
 
   private readonly eventEmitter = new EventEmitter();
 
@@ -77,9 +78,12 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
       this.#reportDiagnostic,
       undefined, // reportSolutionBuilderStatus,
     );
-    const createBuilder = () => ts.createSolutionBuilder(host, rootNames, defaultOptions);
+    const createBuilder = () =>
+      ts.createSolutionBuilder(host, rootNames, defaultOptions);
     // Work off a new builder, as the tsc API doesn't expose any way to invalidate/revalidate projects
-    const watch = new Watch(this.system, watch => this.consumeBuilder(createBuilder(), cancellationToken, watch));
+    const watch = new Watch(this.system, (watch) =>
+      this.consumeBuilder(createBuilder(), cancellationToken, watch),
+    );
     watch.watchConfigFile(this.tsconfigPath);
 
     this.consumeBuilder(createBuilder(), cancellationToken, watch);
@@ -103,31 +107,83 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
     });
   }
 
-  public on(event: BuildEvent.BeforeSolution, listener: (solution: TypeScriptSolution<T>) => void): this;
-  public on(event: BuildEvent.AfterSolution, listener: (solution: TypeScriptSolution<T>, errorCount: number) => void): this;
-  public on(event: BuildEvent.BeforeProject, listener: (project: ts.InvalidatedProject<T>) => void): this;
-  public on(event: BuildEvent.AfterProject, listener: (project: ts.InvalidatedProject<T>) => void): this;
-  public on(event: BuildEvent.Diagnostic, listener: (diagnostic: ts.Diagnostic) => void): this;
-  public on(event: BuildEvent.OutputsGenerated, listener: (project: ts.InvalidatedProject<T>) => void): this;
-  public on(event: BuildEvent.OutputsSkipped, listener: (project: ts.InvalidatedProject<T>, reason: OutputsSkippedReason) => void): this;
+  public on(
+    event: BuildEvent.BeforeSolution,
+    listener: (solution: TypeScriptSolution<T>) => void,
+  ): this;
+  public on(
+    event: BuildEvent.AfterSolution,
+    listener: (solution: TypeScriptSolution<T>, errorCount: number) => void,
+  ): this;
+  public on(
+    event: BuildEvent.BeforeProject,
+    listener: (project: ts.InvalidatedProject<T>) => void,
+  ): this;
+  public on(
+    event: BuildEvent.AfterProject,
+    listener: (project: ts.InvalidatedProject<T>) => void,
+  ): this;
+  public on(
+    event: BuildEvent.Diagnostic,
+    listener: (diagnostic: ts.Diagnostic) => void,
+  ): this;
+  public on(
+    event: BuildEvent.OutputsGenerated,
+    listener: (project: ts.InvalidatedProject<T>) => void,
+  ): this;
+  public on(
+    event: BuildEvent.OutputsSkipped,
+    listener: (
+      project: ts.InvalidatedProject<T>,
+      reason: OutputsSkippedReason,
+    ) => void,
+  ): this;
   public on(event: BuildEvent, listener: (...any: any[]) => void): this {
     this.eventEmitter.on(event, listener);
     return this;
   }
 
-  public once(event: BuildEvent.BeforeSolution, listener: (solution: TypeScriptSolution<T>) => void): this;
-  public once(event: BuildEvent.AfterSolution, listener: (solution: TypeScriptSolution<T>, errorCount: number) => void): this;
-  public once(event: BuildEvent.BeforeProject, listener: (project: ts.InvalidatedProject<T>) => void): this;
-  public once(event: BuildEvent.AfterProject, listener: (project: ts.InvalidatedProject<T>) => void): this;
-  public once(event: BuildEvent.Diagnostic, listener: (diagnostic: ts.Diagnostic) => void): this;
-  public once(event: BuildEvent.OutputsGenerated, listener: (project: ts.InvalidatedProject<T>) => void): this;
-  public once(event: BuildEvent.OutputsSkipped, listener: (project: ts.InvalidatedProject<T>, reason: OutputsSkippedReason) => void): this;
+  public once(
+    event: BuildEvent.BeforeSolution,
+    listener: (solution: TypeScriptSolution<T>) => void,
+  ): this;
+  public once(
+    event: BuildEvent.AfterSolution,
+    listener: (solution: TypeScriptSolution<T>, errorCount: number) => void,
+  ): this;
+  public once(
+    event: BuildEvent.BeforeProject,
+    listener: (project: ts.InvalidatedProject<T>) => void,
+  ): this;
+  public once(
+    event: BuildEvent.AfterProject,
+    listener: (project: ts.InvalidatedProject<T>) => void,
+  ): this;
+  public once(
+    event: BuildEvent.Diagnostic,
+    listener: (diagnostic: ts.Diagnostic) => void,
+  ): this;
+  public once(
+    event: BuildEvent.OutputsGenerated,
+    listener: (project: ts.InvalidatedProject<T>) => void,
+  ): this;
+  public once(
+    event: BuildEvent.OutputsSkipped,
+    listener: (
+      project: ts.InvalidatedProject<T>,
+      reason: OutputsSkippedReason,
+    ) => void,
+  ): this;
   public once(event: BuildEvent, listener: (...args: any[]) => void): this {
     this.eventEmitter.once(event, listener);
     return this;
   }
 
-  private consumeBuilder(builder: ts.SolutionBuilder<T>, cancellationToken?: ts.CancellationToken, watch?: Watch): void {
+  private consumeBuilder(
+    builder: ts.SolutionBuilder<T>,
+    cancellationToken?: ts.CancellationToken,
+    watch?: Watch,
+  ): void {
     if (watch != null) {
       this.emit(BuildEvent.BeforeSolution, this);
     }
@@ -144,7 +200,11 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
       this.on(BuildEvent.Diagnostic, incrementErrorCounter);
     }
 
-    for (let invalidatedProject = next(); invalidatedProject != null; invalidatedProject = next()) {
+    for (
+      let invalidatedProject = next();
+      invalidatedProject != null;
+      invalidatedProject = next()
+    ) {
       this.emit(BuildEvent.BeforeProject, invalidatedProject);
       try {
         const exitStatus = invalidatedProject.done(
@@ -160,17 +220,31 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
             this.emit(BuildEvent.OutputsGenerated, invalidatedProject);
             break;
           case ts.ExitStatus.DiagnosticsPresent_OutputsSkipped:
-            this.emit(BuildEvent.OutputsSkipped, invalidatedProject, OutputsSkippedReason.DiagnosticsPresent);
+            this.emit(
+              BuildEvent.OutputsSkipped,
+              invalidatedProject,
+              OutputsSkippedReason.DiagnosticsPresent,
+            );
             break;
           case ts.ExitStatus.InvalidProject_OutputsSkipped:
-            this.emit(BuildEvent.OutputsSkipped, invalidatedProject, OutputsSkippedReason.InvalidProject);
+            this.emit(
+              BuildEvent.OutputsSkipped,
+              invalidatedProject,
+              OutputsSkippedReason.InvalidProject,
+            );
             break;
           case ts.ExitStatus.ProjectReferenceCycle_OutputsSkipped:
           case ts.ExitStatus.ProjectReferenceCycle_OutputsSkupped:
-            this.emit(BuildEvent.OutputsSkipped, invalidatedProject, OutputsSkippedReason.ProjectReferenceCycle);
+            this.emit(
+              BuildEvent.OutputsSkipped,
+              invalidatedProject,
+              OutputsSkippedReason.ProjectReferenceCycle,
+            );
             break;
           default:
-            throw new Error(`Unsupported exitStatus: ${ts.ExitStatus[exitStatus]}`);
+            throw new Error(
+              `Unsupported exitStatus: ${ts.ExitStatus[exitStatus]}`,
+            );
         }
       } finally {
         if (watch != null) {
@@ -185,7 +259,10 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
     }
   }
 
-  public removeListener(event: BuildEvent, listener: (...args: any[]) => void): this {
+  public removeListener(
+    event: BuildEvent,
+    listener: (...args: any[]) => void,
+  ): this {
     this.eventEmitter.removeListener(event, listener);
     return this;
   }
@@ -195,13 +272,36 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
     return this;
   }
 
-  private emit(event: BuildEvent.BeforeSolution, solution: TypeScriptSolution<T>): boolean;
-  private emit(event: BuildEvent.AfterSolution, solution: TypeScriptSolution<T>, errorCount: number): boolean;
-  private emit(event: BuildEvent.BeforeProject, project: ts.InvalidatedProject<T>): boolean;
-  private emit(event: BuildEvent.AfterProject, project: ts.InvalidatedProject<T>): boolean;
-  private emit(event: BuildEvent.Diagnostic, diagnostic: ts.Diagnostic): boolean;
-  private emit(event: BuildEvent.OutputsGenerated, project: ts.InvalidatedProject<T>): boolean;
-  private emit(event: BuildEvent.OutputsSkipped, project: ts.InvalidatedProject<T>, reason: OutputsSkippedReason): boolean;
+  private emit(
+    event: BuildEvent.BeforeSolution,
+    solution: TypeScriptSolution<T>,
+  ): boolean;
+  private emit(
+    event: BuildEvent.AfterSolution,
+    solution: TypeScriptSolution<T>,
+    errorCount: number,
+  ): boolean;
+  private emit(
+    event: BuildEvent.BeforeProject,
+    project: ts.InvalidatedProject<T>,
+  ): boolean;
+  private emit(
+    event: BuildEvent.AfterProject,
+    project: ts.InvalidatedProject<T>,
+  ): boolean;
+  private emit(
+    event: BuildEvent.Diagnostic,
+    diagnostic: ts.Diagnostic,
+  ): boolean;
+  private emit(
+    event: BuildEvent.OutputsGenerated,
+    project: ts.InvalidatedProject<T>,
+  ): boolean;
+  private emit(
+    event: BuildEvent.OutputsSkipped,
+    project: ts.InvalidatedProject<T>,
+    reason: OutputsSkippedReason,
+  ): boolean;
   private emit(event: BuildEvent, ...args: any): boolean {
     return this.eventEmitter.emit(event, ...args);
   }
@@ -210,7 +310,9 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
 /**
  * Custom options to initialize a TypeScript compiler.
  */
-export interface TypeScriptProjectOptions<T extends ts.BuilderProgram = ts.EmitAndSemanticDiagnosticsBuilderProgram> {
+export interface TypeScriptProjectOptions<
+  T extends ts.BuilderProgram = ts.EmitAndSemanticDiagnosticsBuilderProgram
+> {
   /**
    * A TypeScrypt system.
    */

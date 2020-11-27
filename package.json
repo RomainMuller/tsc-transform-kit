@@ -13,11 +13,11 @@
     "tsc-transform-kit": "bin/tsc-tk"
   },
   "scripts": {
-    "build": "yarn run prepare && tsc --build && npm run lint",
-    "build:watch": "yarn run prepare && tsc --build --watch",
-    "lint": "yarn run prepare && eslint . --ext .js,.jsx,.ts,.tsx",
-    "prepare": "node hooks/prepare.js",
-    "test": "yarn run prepare && jest",
+    "build": "tsc --build && npm run lint",
+    "build:watch": "tsc --build --watch",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "install": "node hooks/install.js",
+    "test": "jest",
     "test:update": "yarn run test -u",
     "test:watch": "yarn run test --watch"
   },

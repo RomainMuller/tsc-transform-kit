@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 13.x]
+        node-version: [10.x, 12.x, 14.x, 15.x]
 
     steps:
       - name: Checkout code
@@ -47,7 +47,7 @@ jobs:
           GIT_BRANCH:           ${{github.head_ref}}
 
       - name: Install Dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
       - name: Build
         run: yarn build
       - name: Test

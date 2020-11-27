@@ -1,6 +1,7 @@
-coverage/
-dist/
-node_modules/
-test/examples/
+/coverage/
+/dist/
+/hooks/
+/test/examples/
 
 jest.config.js
+*.generated.*

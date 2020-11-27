@@ -13,12 +13,15 @@ export abstract class Transformer {
    *
    * @return the result of the transformation.
    */
-  public transform<T extends ts.Node>(node: T, context: TransformerContext): T {
-    return ts.visitNode(
+  public transform<T extends ts.Node = ts.Node>(
+    node: T,
+    context: TransformerContext,
+  ): T {
+    return ts.visitNode<T>(
       node,
       (node) => this.visit(node, context),
-      this.isValidNode && ((node) => this.isValidNode!(node, context)),
-      this.liftNodeArray && ((node) => this.liftNodeArray!<T>(node, context)),
+      this.nodeValidatorFactory?.(context),
+      this.nodeLifterFactory?.(context),
     );
   }
 
@@ -60,28 +63,26 @@ export abstract class Transformer {
   /**
    * An optional test to determine whether a node is valid or not.
    *
-   * @param node    the node being checked.
    * @param context the context of the transformation.
    *
-   * @returns `true` if the node is valid.
+   * @returns A node validator function, which returns `true` if the provided
+   *          `ts.Node` is valid.
    */
-  public readonly isValidNode?: (
-    node: ts.Node,
+  protected abstract nodeValidatorFactory?(
     context: TransformerContext,
-  ) => boolean;
+  ): (node: ts.Node) => boolean;
 
   /**
    * An optional function to lift a NodeArray into a valid Node.
    *
-   * @param nodes   the NodeArray to be lifted.
    * @param context the context of the transformation.
    *
-   * @returns the lifted node.
+   * @returns A node lifter function, which lifts a `ts.Node` from the provided
+   *          `ts.NodeArray<ts.Node>`.
    */
-  public readonly liftNodeArray?: <T extends ts.Node>(
-    nodes: ts.NodeArray<ts.Node>,
+  protected abstract nodeLifterFactory?(
     context: TransformerContext,
-  ) => T;
+  ): <T extends ts.Node = ts.Node>(nodes: ts.NodeArray<ts.Node>) => T;
 }
 
 /**

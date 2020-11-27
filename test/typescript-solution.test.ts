@@ -197,4 +197,7 @@ class UpcasingTransformer extends Transformer {
     }
     return this.transformChildren(node, context);
   }
+
+  protected readonly nodeValidatorFactory = undefined;
+  protected readonly nodeLifterFactory = undefined;
 }

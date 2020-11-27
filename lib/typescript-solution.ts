@@ -17,20 +17,21 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
   /**
    * Creates a new TypeScript project.
    *
-   * @param tsconfigPath the path to the tsconfig.json for the project.
-   * @param transformers custom transformers to apply.
-   * @param options      options for the underlying TypeScript compiler.
+   * @param tsconfigPath  the path to the tsconfig.json for the project.
+   * @param transformers  custom transformers to apply.
+   * @param createProgram the createProgram function to use.
+   * @param system        the TypeScript system to use.
    */
   public constructor(
     public readonly tsconfigPath: string,
     public readonly transformers: Transformers = new Transformers(),
-    options?: TypeScriptProjectOptions<T>,
+    { createProgram, system = ts.sys }: TypeScriptProjectOptions<T> = {},
   ) {
     if (!existsSync(tsconfigPath)) {
       throw new Error(`${tsconfigPath} does not exist!`);
     }
-    this.#system = options?.system ?? ts.sys;
-    this.#createProgram = options?.createProgram;
+    this.#system = system;
+    this.#createProgram = createProgram;
   }
 
   /**

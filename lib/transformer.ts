@@ -1,4 +1,4 @@
-import ts from 'typescript';
+import * as ts from 'typescript';
 
 /**
  * Transformers encapsulate the logic to transform TypeScript AST nodes during
@@ -98,35 +98,39 @@ export class TransformerContext {
    */
   public readonly phase: TransformerPhase;
 
+  // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
+  readonly #invalidatedProject: ts.InvalidatedProject<ts.BuilderProgram>;
+
   /** @internal */
   public constructor(
     phase: TransformerPhase,
     context: ts.TransformationContext,
-    private readonly invalidatedProject: ts.InvalidatedProject<ts.BuilderProgram>,
+    invalidatedProject: ts.InvalidatedProject<ts.BuilderProgram>,
   ) {
     this.context = context;
     this.phase = phase;
+    this.#invalidatedProject = invalidatedProject;
   }
 
   /**
    * Compiler options used for the current transformation.
    */
   public get compilerOptions(): ts.CompilerOptions {
-    return this.invalidatedProject.getCompilerOptions();
+    return this.#invalidatedProject.getCompilerOptions();
   }
 
   /**
    * The directory in which the compiler is currently operating.
    */
   public get currentDirectory(): string {
-    return this.invalidatedProject.getCurrentDirectory();
+    return this.#invalidatedProject.getCurrentDirectory();
   }
 
   /**
    * The path to the configuration file of the current project.
    */
   public get projectConfiguration(): string {
-    return this.invalidatedProject.project;
+    return this.#invalidatedProject.project;
   }
 
   /**
@@ -134,8 +138,8 @@ export class TransformerContext {
    * invalidated project that triggered the transformation is of "Build" kind.
    */
   public get program(): ts.Program | undefined {
-    if (this.invalidatedProject.kind === ts.InvalidatedProjectKind.Build) {
-      this.invalidatedProject.getProgram();
+    if (this.#invalidatedProject.kind === ts.InvalidatedProjectKind.Build) {
+      this.#invalidatedProject.getProgram();
     }
     return undefined;
   }

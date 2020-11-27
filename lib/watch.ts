@@ -1,5 +1,5 @@
 import { extname, join } from 'path';
-import ts from 'typescript';
+import * as ts from 'typescript';
 
 /**
  * A compilation watch.
@@ -18,14 +18,16 @@ export class Watch implements IWatch {
   /* eslint-disable @typescript-eslint/explicit-member-accessibility */
   readonly #host: ts.WatchHost;
   readonly #performBuild: (fileName: string) => void;
+  readonly #pollingInterval?: number;
+  readonly #system: ts.System;
   readonly #watchers = new Map<string, ts.FileWatcher>();
   #stopped = false;
   /* eslint-enable @typescript-eslint/explicit-member-accessibility */
 
   public constructor(
-    private readonly system: ts.System,
+    system: ts.System,
     callback: (watch: Watch) => void,
-    private readonly pollingInterval?: number,
+    pollingInterval?: number,
   ) {
     if (system.watchDirectory == null || system.watchFile == null) {
       throw new Error(
@@ -46,14 +48,16 @@ export class Watch implements IWatch {
       }
       callback(this);
     };
+    this.#pollingInterval = pollingInterval;
+    this.#system = system;
   }
 
   public watchConfigFile(path: string) {
-    const config = parseConfiguration(path, this.system);
+    const config = parseConfiguration(path, this.#system);
     if (!this.#watchers.has(path)) {
       this.#watchers.set(
         path,
-        this.#host.watchFile(path, this.#performBuild, this.pollingInterval),
+        this.#host.watchFile(path, this.#performBuild, this.#pollingInterval),
       );
     }
     if (config) {
@@ -121,7 +125,7 @@ export class Watch implements IWatch {
         this.#host.watchFile(
           path,
           this.#performBuild,
-          this.pollingInterval,
+          this.#pollingInterval,
           watchOptions,
         ),
       );

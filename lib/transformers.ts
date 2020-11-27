@@ -1,4 +1,4 @@
-import ts from 'typescript';
+import * as ts from 'typescript';
 import {
   Transformer,
   TransformerContext,
@@ -6,14 +6,15 @@ import {
 } from './transformer';
 
 export class Transformers {
-  private readonly transformers: Transformer[];
+  // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
+  readonly #transformers: Transformer[];
 
-  public constructor(...transformers: Transformer[]) {
-    this.transformers = Array.from(transformers);
+  public constructor(...transformers: readonly Transformer[]) {
+    this.#transformers = Array.from(transformers);
   }
 
   public addTransformer(transformer: Transformer): this {
-    this.transformers.push(transformer);
+    this.#transformers.push(transformer);
     return this;
   }
 
@@ -21,13 +22,13 @@ export class Transformers {
     project: ts.InvalidatedProject<T>,
   ): ts.CustomTransformers {
     return {
-      before: this.transformers.map((tx) =>
+      before: this.#transformers.map((tx) =>
         customTransformerFactory(tx, TransformerPhase.Before),
       ),
-      after: this.transformers.map((tx) =>
+      after: this.#transformers.map((tx) =>
         customTransformerFactory(tx, TransformerPhase.After),
       ),
-      afterDeclarations: this.transformers.map((tx) =>
+      afterDeclarations: this.#transformers.map((tx) =>
         customTransformerFactory(tx, TransformerPhase.AfterDeclarations),
       ),
     };
@@ -43,15 +44,19 @@ export class Transformers {
 
 class CustomTransformerFactory<T extends ts.BuilderProgram>
   implements ts.CustomTransformer {
-  private readonly transformerContext: TransformerContext;
+  /* eslint-disable @typescript-eslint/explicit-member-accessibility */
+  readonly #delegate: Transformer;
+  readonly #transformerContext: TransformerContext;
+  /* eslint-enable @typescript-eslint/explicit-member-accessibility */
 
   public constructor(
-    private readonly delegate: Transformer,
+    delegate: Transformer,
     invalidatedProject: ts.InvalidatedProject<T>,
     context: ts.TransformationContext,
     phase: TransformerPhase,
   ) {
-    this.transformerContext = new TransformerContext(
+    this.#delegate = delegate;
+    this.#transformerContext = new TransformerContext(
       phase,
       context,
       invalidatedProject,
@@ -59,10 +64,10 @@ class CustomTransformerFactory<T extends ts.BuilderProgram>
   }
 
   public transformBundle(node: ts.Bundle): ts.Bundle {
-    return this.delegate.transform(node, this.transformerContext);
+    return this.#delegate.transform(node, this.#transformerContext);
   }
 
   public transformSourceFile(node: ts.SourceFile): ts.SourceFile {
-    return this.delegate.transform(node, this.transformerContext);
+    return this.#delegate.transform(node, this.#transformerContext);
   }
 }

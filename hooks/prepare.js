@@ -11,15 +11,17 @@ const statements = [
   ts.addSyntheticLeadingComment(
     ts.factory.createVariableStatement(
       [ts.factory.createModifier(ts.SyntaxKind.ExportKeyword)],
-      [
-        ts.factory.createVariableDeclaration(
-          'version',
-          undefined,
-          undefined,
-          ts.factory.createStringLiteral(version, true),
-        ),
-      ],
-      ts.NodeFlags.Const,
+      ts.factory.createVariableDeclarationList(
+        [
+          ts.factory.createVariableDeclaration(
+            'version',
+            undefined,
+            ts.factory.createKeywordTypeNode(ts.SyntaxKind.StringKeyword),
+            ts.factory.createStringLiteral(version, true),
+          ),
+        ],
+        ts.NodeFlags.Const,
+      ),
     ),
     ts.SyntaxKind.MultiLineCommentTrivia,
     '*\n * The currently installed version of `tsc-transform-kit`.\n ',

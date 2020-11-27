@@ -1,6 +1,6 @@
 import { readdirSync, readFile, writeFile } from 'fs';
 import { resolve } from 'path';
-import ts from 'typescript';
+import * as ts from 'typescript';
 import { promisify } from 'util';
 import {
   BuildEvent,

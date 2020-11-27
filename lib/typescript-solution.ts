@@ -1,19 +1,18 @@
 import { EventEmitter } from 'events';
 import { existsSync } from 'fs';
 import { resolve } from 'path';
-import ts from 'typescript';
+import * as ts from 'typescript';
 import { Transformers } from './transformers';
 import { IWatch, Watch } from './watch';
 
 export class TypeScriptSolution<T extends ts.BuilderProgram> {
-  private readonly system: ts.System;
-  private readonly createProgram?: ts.CreateProgram<T>;
-
-  // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
+  /* eslint-disable @typescript-eslint/explicit-member-accessibility */
+  readonly #createProgram?: ts.CreateProgram<T>;
+  readonly #eventEmitter = new EventEmitter();
   readonly #reportDiagnostic: ts.DiagnosticReporter = (diag) =>
     this.emit(BuildEvent.Diagnostic, diag);
-
-  private readonly eventEmitter = new EventEmitter();
+  readonly #system: ts.System;
+  /* eslint-enable @typescript-eslint/explicit-member-accessibility */
 
   /**
    * Creates a new TypeScript project.
@@ -30,8 +29,8 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
     if (!existsSync(tsconfigPath)) {
       throw new Error(`${tsconfigPath} does not exist!`);
     }
-    this.system = options?.system ?? ts.sys;
-    this.createProgram = options?.createProgram;
+    this.#system = options?.system ?? ts.sys;
+    this.#createProgram = options?.createProgram;
   }
 
   /**
@@ -42,13 +41,13 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
    * @param cancellationToken a cancellation token.
    */
   public build(
-    rootNames: string[] = [this.tsconfigPath],
+    rootNames: readonly string[] = [this.tsconfigPath],
     defaultOptions: ts.BuildOptions = { incremental: true },
     cancellationToken?: ts.CancellationToken,
   ): void {
     const host = ts.createSolutionBuilderHost(
-      this.system,
-      this.createProgram,
+      this.#system,
+      this.#createProgram,
       this.#reportDiagnostic,
       undefined, // reportSolutionBuilderStatus,
       undefined, // reportErrorSummary,
@@ -68,20 +67,20 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
    * @returns an `IWatch` that can be used to stop the process.
    */
   public watch(
-    rootNames: string[] = [this.tsconfigPath],
+    rootNames: readonly string[] = [this.tsconfigPath],
     defaultOptions: ts.BuildOptions = { incremental: true },
     cancellationToken?: ts.CancellationToken,
   ): IWatch {
     const host = ts.createSolutionBuilderHost(
-      this.system,
-      this.createProgram,
+      this.#system,
+      this.#createProgram,
       this.#reportDiagnostic,
       undefined, // reportSolutionBuilderStatus,
     );
     const createBuilder = () =>
       ts.createSolutionBuilder(host, rootNames, defaultOptions);
     // Work off a new builder, as the tsc API doesn't expose any way to invalidate/revalidate projects
-    const watch = new Watch(this.system, (watch) =>
+    const watch = new Watch(this.#system, (watch) =>
       this.consumeBuilder(createBuilder(), cancellationToken, watch),
     );
     watch.watchConfigFile(this.tsconfigPath);
@@ -102,8 +101,8 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
   public formatDiagnostics(...diagnostics: readonly ts.Diagnostic[]): string {
     return ts.formatDiagnosticsWithColorAndContext(diagnostics, {
       getCanonicalFileName: resolve,
-      getCurrentDirectory: this.system.getCurrentDirectory,
-      getNewLine: () => this.system.newLine,
+      getCurrentDirectory: this.#system.getCurrentDirectory,
+      getNewLine: () => this.#system.newLine,
     });
   }
 
@@ -138,8 +137,11 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
       reason: OutputsSkippedReason,
     ) => void,
   ): this;
-  public on(event: BuildEvent, listener: (...any: any[]) => void): this {
-    this.eventEmitter.on(event, listener);
+  public on(
+    event: BuildEvent,
+    listener: (...any: readonly any[]) => void,
+  ): this {
+    this.#eventEmitter.on(event, listener);
     return this;
   }
 
@@ -174,8 +176,24 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
       reason: OutputsSkippedReason,
     ) => void,
   ): this;
-  public once(event: BuildEvent, listener: (...args: any[]) => void): this {
-    this.eventEmitter.once(event, listener);
+  public once(
+    event: BuildEvent,
+    listener: (...args: readonly any[]) => void,
+  ): this {
+    this.#eventEmitter.once(event, listener);
+    return this;
+  }
+
+  public removeListener(
+    event: BuildEvent,
+    listener: (...args: readonly any[]) => void,
+  ): this {
+    this.#eventEmitter.removeListener(event, listener);
+    return this;
+  }
+
+  public removeAllListeners(): this {
+    this.#eventEmitter.removeAllListeners();
     return this;
   }
 
@@ -209,7 +227,7 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
       try {
         const exitStatus = invalidatedProject.done(
           cancellationToken,
-          this.system.writeFile,
+          this.#system.writeFile,
           this.transformers.forInvalidatedProject(invalidatedProject),
         );
         switch (exitStatus) {
@@ -259,19 +277,6 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
     }
   }
 
-  public removeListener(
-    event: BuildEvent,
-    listener: (...args: any[]) => void,
-  ): this {
-    this.eventEmitter.removeListener(event, listener);
-    return this;
-  }
-
-  public removeAllListeners(): this {
-    this.eventEmitter.removeAllListeners();
-    return this;
-  }
-
   private emit(
     event: BuildEvent.BeforeSolution,
     solution: TypeScriptSolution<T>,
@@ -303,7 +308,7 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
     reason: OutputsSkippedReason,
   ): boolean;
   private emit(event: BuildEvent, ...args: any): boolean {
-    return this.eventEmitter.emit(event, ...args);
+    return this.#eventEmitter.emit(event, ...args);
   }
 }
 

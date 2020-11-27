@@ -682,6 +682,7 @@ __metadata:
     jest-circus: ^26.6.3
     jest-config: ^26.6.3
     jest-runner: ^26.6.3
+    prettier: ^2.2.0
     ts-jest: ^26.4.4
     tslib: ^2.0.3
     typescript: ~4.1.2
@@ -4908,6 +4909,15 @@ fsevents@^2.1.2:
   version: 1.1.2
   resolution: "prelude-ls@npm:1.1.2"
   checksum: 189c969c92151b0de7a6e5d2ae0c4e50bbec5675cdd9fee3b7509d9d74b6416787ee36a8c12a07e8afb01454a8185b695b3395912484fa118e071fea45223b9b
+  languageName: node
+  linkType: hard
+
+"prettier@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "prettier@npm:2.2.0"
+  bin:
+    prettier: bin-prettier.js
+  checksum: fe7e2ac725d3b067204700c5fcee415a90e1c1ab01735a7748bce791db61a3242939a032bfe5f8faa2c054571f4e9bac266b766e483648511af72f69fb041a6c
   languageName: node
   linkType: hard
 

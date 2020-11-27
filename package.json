@@ -14,12 +14,13 @@
     "tsc-transform-kit": "bin/tsc-tk"
   },
   "scripts": {
-    "build": "tsc --build && npm run lint",
-    "build:watch": "tsc --build --watch",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "test": "jest",
-    "test:update": "jest -u",
-    "test:watch": "jest --watch"
+    "build": "yarn run prepare && tsc --build && npm run lint",
+    "build:watch": "yarn run prepare && tsc --build --watch",
+    "lint": "yarn run prepare && eslint . --ext .js,.jsx,.ts,.tsx",
+    "prepare": "node hooks/prepare.js",
+    "test": "yarn run prepare && jest",
+    "test:update": "yarn run test -u",
+    "test:watch": "yarn run test --watch"
   },
   "keywords": [
     "typescript",
@@ -52,6 +53,7 @@
     "jest-circus": "^26.6.3",
     "jest-config": "^26.6.3",
     "jest-runner": "^26.6.3",
+    "prettier": "^2.2.0",
     "ts-jest": "^26.4.4"
   },
   "dependencies": {

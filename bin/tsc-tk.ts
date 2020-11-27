@@ -1,8 +1,7 @@
 import { program } from 'commander';
 import { argv } from 'process';
 import * as ts from 'typescript';
-import { TypeScriptSolution, BuildEvent } from '../lib';
-import { version } from '../package.json';
+import { TypeScriptSolution, BuildEvent, version } from '../lib';
 
 function compile(tsconfig: string, { watch }: { watch: boolean }): void {
   const project = new TypeScriptSolution(tsconfig);
@@ -29,6 +28,7 @@ function compile(tsconfig: string, { watch }: { watch: boolean }): void {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 program.version(version, '-v, --version', 'Print tsc-tk\'s version')
   .description('A supercharged TypeScript compiler')
   .helpOption('-h, --help', 'Print this message')

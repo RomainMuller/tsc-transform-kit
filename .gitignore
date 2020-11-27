@@ -2,3 +2,11 @@
 /dist
 /node_modules
 /test/examples/**/dist
+
+# Yarn 2
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*

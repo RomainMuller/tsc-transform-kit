@@ -1,13 +1,12 @@
 {
   "name": "@romainmuller/tsc-transform-kit",
   "description": "A framework to write TypeScript transforms.",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "commonjs",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
   "exports": [
-    "./",
-    "./package.json"
+    "./"
   ],
   "bin": {
     "tsc-tk": "bin/tsc-tk",

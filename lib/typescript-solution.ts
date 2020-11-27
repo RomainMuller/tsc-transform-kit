@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import { existsSync } from 'fs';
 import { resolve } from 'path';
-import * as ts from 'typescript';
+import ts from 'typescript';
 import { Transformers } from './transformers';
 import { IWatch, Watch } from './watch';
 

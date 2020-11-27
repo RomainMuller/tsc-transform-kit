@@ -1,6 +1,6 @@
 import { readdirSync, readFile, writeFile } from 'fs';
 import { resolve } from 'path';
-import * as ts from 'typescript';
+import ts from 'typescript';
 import { promisify } from 'util';
 import {
   BuildEvent,
@@ -191,7 +191,9 @@ class UpcasingTransformer extends Transformer {
       return node;
     }
     if (ts.isIdentifier(node)) {
-      return (ts.createIdentifier(node.text.toUpperCase()) as unknown) as T;
+      return (ts.factory.createIdentifier(
+        node.text.toUpperCase(),
+      ) as unknown) as T;
     }
     return this.transformChildren(node, context);
   }

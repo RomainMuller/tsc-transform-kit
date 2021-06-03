@@ -13,10 +13,7 @@ export abstract class Transformer {
    *
    * @return the result of the transformation.
    */
-  public transform<T extends ts.Node = ts.Node>(
-    node: T,
-    context: TransformerContext,
-  ): T {
+  public transform<T extends ts.Node = ts.Node>(node: T, context: TransformerContext): T {
     return ts.visitNode<T>(
       node,
       (node: ts.Node) => this.visit(node, context),
@@ -34,15 +31,8 @@ export abstract class Transformer {
    *
    * @returns the result of the children transformation.
    */
-  public transformChildren<T extends ts.Node>(
-    node: T,
-    context: TransformerContext,
-  ): T {
-    return ts.visitEachChild(
-      node,
-      (node: ts.Node) => this.visit(node, context),
-      context.context,
-    );
+  public transformChildren<T extends ts.Node>(node: T, context: TransformerContext): T {
+    return ts.visitEachChild(node, (node: ts.Node) => this.visit(node, context), context.context);
   }
 
   /**
@@ -55,10 +45,7 @@ export abstract class Transformer {
    *
    * @returns the result of the transformation.
    */
-  public abstract visit<T extends ts.Node>(
-    node: T,
-    context: TransformerContext,
-  ): ts.VisitResult<T>;
+  public abstract visit<T extends ts.Node>(node: T, context: TransformerContext): ts.VisitResult<T>;
 
   /**
    * An optional test to determine whether a node is valid or not.
@@ -68,9 +55,7 @@ export abstract class Transformer {
    * @returns A node validator function, which returns `true` if the provided
    *          `ts.Node` is valid.
    */
-  protected abstract nodeValidatorFactory?(
-    context: TransformerContext,
-  ): (node: ts.Node) => boolean;
+  protected abstract nodeValidatorFactory?(context: TransformerContext): (node: ts.Node) => boolean;
 
   /**
    * An optional function to lift a NodeArray into a valid Node.

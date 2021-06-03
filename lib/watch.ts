@@ -75,13 +75,8 @@ export class Watch implements IWatch {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-  #watchWildCardDirectories = (
-    config: ts.ParsedCommandLine,
-    watchOptions?: ts.WatchOptions,
-  ) => {
-    for (const [path, flags] of Object.entries(
-      config.wildcardDirectories ?? {},
-    )) {
+  #watchWildCardDirectories = (config: ts.ParsedCommandLine, watchOptions?: ts.WatchOptions) => {
+    for (const [path, flags] of Object.entries(config.wildcardDirectories ?? {})) {
       if (this.#watchers.has(path)) {
         continue;
       }
@@ -112,22 +107,14 @@ export class Watch implements IWatch {
   };
 
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-  #watchInputFiles = (
-    config: ts.ParsedCommandLine,
-    watchOptions?: ts.WatchOptions,
-  ) => {
+  #watchInputFiles = (config: ts.ParsedCommandLine, watchOptions?: ts.WatchOptions) => {
     for (const path of config.fileNames) {
       if (this.#watchers.has(path)) {
         continue;
       }
       this.#watchers.set(
         path,
-        this.#host.watchFile(
-          path,
-          this.#performBuild,
-          this.#pollingInterval,
-          watchOptions,
-        ),
+        this.#host.watchFile(path, this.#performBuild, this.#pollingInterval, watchOptions),
       );
     }
   };
@@ -143,10 +130,7 @@ const TS_SOURCE_EXTENSIONS = ['.ts', '.tsx'];
  *
  * @returns `true` if the file is a supported input file.
  */
-function isSupportedSourceFile(
-  path: string,
-  config: ts.ParsedCommandLine,
-): boolean {
+function isSupportedSourceFile(path: string, config: ts.ParsedCommandLine): boolean {
   const supportedExts = new Set(TS_SOURCE_EXTENSIONS);
   if (config.options.allowJs) {
     supportedExts.add('.js');
@@ -173,35 +157,23 @@ function isOutputFile(path: string, config: ts.ParsedCommandLine): boolean {
   }
 
   // .ts (that are not .d.ts) and .tsx files are never output files
-  if (
-    !path.endsWith('.d.ts') &&
-    (path.endsWith('.ts') || path.endsWith('.tsx'))
-  ) {
+  if (!path.endsWith('.d.ts') && (path.endsWith('.ts') || path.endsWith('.tsx'))) {
     return false;
   }
 
   // If there's an outFile, and this is it, then obviously...
   const outFile = config.options.outFile ?? config.options.out;
-  if (
-    outFile &&
-    (outFile === path || outFile.replace(/\.[^.]*$/i, '.d.ts') === path)
-  ) {
+  if (outFile && (outFile === path || outFile.replace(/\.[^.]*$/i, '.d.ts') === path)) {
     return true;
   }
 
   // If there's a declarationDir, and the file is in there, then obviously...
-  if (
-    config.options.declarationDir &&
-    path.startsWith(join(config.options.declarationDir, ''))
-  ) {
+  if (config.options.declarationDir && path.startsWith(join(config.options.declarationDir, ''))) {
     return true;
   }
 
   // If there's an outDir, and the file is in there, then obviously...
-  if (
-    config.options.outDir &&
-    path.startsWith(join(config.options.outDir, ''))
-  ) {
+  if (config.options.outDir && path.startsWith(join(config.options.outDir, ''))) {
     return true;
   }
 
@@ -217,10 +189,7 @@ function isOutputFile(path: string, config: ts.ParsedCommandLine): boolean {
  *
  * @returns the parsed command line.
  */
-function parseConfiguration(
-  path: string,
-  system: ts.System,
-): ts.ParsedCommandLine | undefined {
+function parseConfiguration(path: string, system: ts.System): ts.ParsedCommandLine | undefined {
   return ts.getParsedCommandLineOfConfigFile(
     path,
     {},

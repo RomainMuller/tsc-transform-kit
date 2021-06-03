@@ -5,9 +5,6 @@
   "type": "commonjs",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
-  "exports": [
-    "./"
-  ],
   "bin": {
     "tsc-tk": "bin/tsc-tk",
     "tsc-transform-kit": "bin/tsc-tk"
@@ -15,7 +12,7 @@
   "scripts": {
     "build": "tsc --build && npm run lint",
     "build:watch": "tsc --build --watch",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --format codeframe",
     "install": "node hooks/install.js",
     "test": "jest",
     "test:update": "yarn run test -u",

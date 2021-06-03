@@ -1,14 +1,4 @@
-import {
-  access,
-  constants,
-  copyFile,
-  lstat,
-  mkdir,
-  mkdtemp,
-  readdir,
-  rmdir,
-  unlink,
-} from 'fs';
+import { access, constants, copyFile, lstat, mkdir, mkdtemp, readdir, rmdir, unlink } from 'fs';
 import { tmpdir } from 'os';
 import { join, resolve } from 'path';
 import { promisify } from 'util';
@@ -25,9 +15,7 @@ export async function withTemporaryCopy<T>(
   path: string,
   callback: (copyRoot: string) => Promise<T>,
 ): Promise<T> {
-  const tmp = await promisify(mkdtemp)(
-    join(tmpdir(), 'tsc-transform-kit-copy-'),
-  );
+  const tmp = await promisify(mkdtemp)(join(tmpdir(), 'tsc-transform-kit-copy-'));
   await copyDirectory(path, tmp);
   return callback(tmp).then(
     (value) => {

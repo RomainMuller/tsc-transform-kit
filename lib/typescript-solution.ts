@@ -78,8 +78,7 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
       this.#reportDiagnostic,
       undefined, // reportSolutionBuilderStatus,
     );
-    const createBuilder = () =>
-      ts.createSolutionBuilder(host, rootNames, defaultOptions);
+    const createBuilder = () => ts.createSolutionBuilder(host, rootNames, defaultOptions);
     // Work off a new builder, as the tsc API doesn't expose any way to invalidate/revalidate projects
     const watch = new Watch(this.#system, (watch) =>
       this.consumeBuilder(createBuilder(), cancellationToken, watch),
@@ -123,25 +122,16 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
     event: BuildEvent.AfterProject,
     listener: (project: ts.InvalidatedProject<T>) => void,
   ): this;
-  public on(
-    event: BuildEvent.Diagnostic,
-    listener: (diagnostic: ts.Diagnostic) => void,
-  ): this;
+  public on(event: BuildEvent.Diagnostic, listener: (diagnostic: ts.Diagnostic) => void): this;
   public on(
     event: BuildEvent.OutputsGenerated,
     listener: (project: ts.InvalidatedProject<T>) => void,
   ): this;
   public on(
     event: BuildEvent.OutputsSkipped,
-    listener: (
-      project: ts.InvalidatedProject<T>,
-      reason: OutputsSkippedReason,
-    ) => void,
+    listener: (project: ts.InvalidatedProject<T>, reason: OutputsSkippedReason) => void,
   ): this;
-  public on(
-    event: BuildEvent,
-    listener: (...any: readonly any[]) => void,
-  ): this {
+  public on(event: BuildEvent, listener: (...any: readonly any[]) => void): this {
     this.#eventEmitter.on(event, listener);
     return this;
   }
@@ -162,33 +152,21 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
     event: BuildEvent.AfterProject,
     listener: (project: ts.InvalidatedProject<T>) => void,
   ): this;
-  public once(
-    event: BuildEvent.Diagnostic,
-    listener: (diagnostic: ts.Diagnostic) => void,
-  ): this;
+  public once(event: BuildEvent.Diagnostic, listener: (diagnostic: ts.Diagnostic) => void): this;
   public once(
     event: BuildEvent.OutputsGenerated,
     listener: (project: ts.InvalidatedProject<T>) => void,
   ): this;
   public once(
     event: BuildEvent.OutputsSkipped,
-    listener: (
-      project: ts.InvalidatedProject<T>,
-      reason: OutputsSkippedReason,
-    ) => void,
+    listener: (project: ts.InvalidatedProject<T>, reason: OutputsSkippedReason) => void,
   ): this;
-  public once(
-    event: BuildEvent,
-    listener: (...args: readonly any[]) => void,
-  ): this {
+  public once(event: BuildEvent, listener: (...args: readonly any[]) => void): this {
     this.#eventEmitter.once(event, listener);
     return this;
   }
 
-  public removeListener(
-    event: BuildEvent,
-    listener: (...args: readonly any[]) => void,
-  ): this {
+  public removeListener(event: BuildEvent, listener: (...args: readonly any[]) => void): this {
     this.#eventEmitter.removeListener(event, listener);
     return this;
   }
@@ -219,11 +197,7 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
       this.on(BuildEvent.Diagnostic, incrementErrorCounter);
     }
 
-    for (
-      let invalidatedProject = next();
-      invalidatedProject != null;
-      invalidatedProject = next()
-    ) {
+    for (let invalidatedProject = next(); invalidatedProject != null; invalidatedProject = next()) {
       this.emit(BuildEvent.BeforeProject, invalidatedProject);
       try {
         const exitStatus = invalidatedProject.done(
@@ -261,9 +235,7 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
             );
             break;
           default:
-            throw new Error(
-              `Unsupported exitStatus: ${ts.ExitStatus[exitStatus]}`,
-            );
+            throw new Error(`Unsupported exitStatus: ${ts.ExitStatus[exitStatus]}`);
         }
       } finally {
         if (watch != null) {
@@ -278,31 +250,16 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
     }
   }
 
-  private emit(
-    event: BuildEvent.BeforeSolution,
-    solution: TypeScriptSolution<T>,
-  ): boolean;
+  private emit(event: BuildEvent.BeforeSolution, solution: TypeScriptSolution<T>): boolean;
   private emit(
     event: BuildEvent.AfterSolution,
     solution: TypeScriptSolution<T>,
     errorCount: number,
   ): boolean;
-  private emit(
-    event: BuildEvent.BeforeProject,
-    project: ts.InvalidatedProject<T>,
-  ): boolean;
-  private emit(
-    event: BuildEvent.AfterProject,
-    project: ts.InvalidatedProject<T>,
-  ): boolean;
-  private emit(
-    event: BuildEvent.Diagnostic,
-    diagnostic: ts.Diagnostic,
-  ): boolean;
-  private emit(
-    event: BuildEvent.OutputsGenerated,
-    project: ts.InvalidatedProject<T>,
-  ): boolean;
+  private emit(event: BuildEvent.BeforeProject, project: ts.InvalidatedProject<T>): boolean;
+  private emit(event: BuildEvent.AfterProject, project: ts.InvalidatedProject<T>): boolean;
+  private emit(event: BuildEvent.Diagnostic, diagnostic: ts.Diagnostic): boolean;
+  private emit(event: BuildEvent.OutputsGenerated, project: ts.InvalidatedProject<T>): boolean;
   private emit(
     event: BuildEvent.OutputsSkipped,
     project: ts.InvalidatedProject<T>,
@@ -317,7 +274,7 @@ export class TypeScriptSolution<T extends ts.BuilderProgram> {
  * Custom options to initialize a TypeScript compiler.
  */
 export interface TypeScriptProjectOptions<
-  T extends ts.BuilderProgram = ts.EmitAndSemanticDiagnosticsBuilderProgram
+  T extends ts.BuilderProgram = ts.EmitAndSemanticDiagnosticsBuilderProgram,
 > {
   /**
    * A TypeScrypt system.

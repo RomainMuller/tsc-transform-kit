@@ -15,54 +15,8 @@ describe('examples', () => {
   const examplesDir = resolve(__dirname, 'examples');
   for (const example of readdirSync(examplesDir)) {
     test(`"${example}" can be built wihout transforms`, () => {
-      return withTemporaryCopy(
-        resolve(examplesDir, example),
-        async (copyRoot) => {
-          const project = new TypeScriptSolution(
-            resolve(copyRoot, 'tsconfig.json'),
-          );
-
-          // Count how many projects get processed
-          let projectCount = 0;
-          project.on(BuildEvent.BeforeProject, () => (projectCount += 1));
-          // Count how many projects successfully generated
-          let generated = 0;
-          project.on(BuildEvent.OutputsGenerated, () => (generated += 1));
-
-          // Those projects cannot have errors
-          project.on(BuildEvent.Diagnostic, (diag) =>
-            expect(diag).not.toHaveProperty(
-              'category',
-              ts.DiagnosticCategory.Error,
-            ),
-          );
-          // Those projects cannot have warnings
-          project.on(BuildEvent.Diagnostic, (diag) =>
-            expect(diag).not.toHaveProperty(
-              'category',
-              ts.DiagnosticCategory.Warning,
-            ),
-          );
-
-          project.build();
-
-          expect(projectCount).toBeGreaterThan(0);
-          expect(generated).toBe(projectCount);
-
-          return Promise.resolve();
-        },
-      );
-    });
-  }
-
-  test('"basic" can be built with the UpcasingTransformer', async () => {
-    return withTemporaryCopy(
-      resolve(examplesDir, 'basic'),
-      async (copyRoot) => {
-        const project = new TypeScriptSolution(
-          resolve(copyRoot, 'tsconfig.json'),
-        );
-        project.transformers.addTransformer(new UpcasingTransformer());
+      return withTemporaryCopy(resolve(examplesDir, example), async (copyRoot) => {
+        const project = new TypeScriptSolution(resolve(copyRoot, 'tsconfig.json'));
 
         // Count how many projects get processed
         let projectCount = 0;
@@ -73,17 +27,11 @@ describe('examples', () => {
 
         // Those projects cannot have errors
         project.on(BuildEvent.Diagnostic, (diag) =>
-          expect(diag).not.toHaveProperty(
-            'category',
-            ts.DiagnosticCategory.Error,
-          ),
+          expect(diag).not.toHaveProperty('category', ts.DiagnosticCategory.Error),
         );
         // Those projects cannot have warnings
         project.on(BuildEvent.Diagnostic, (diag) =>
-          expect(diag).not.toHaveProperty(
-            'category',
-            ts.DiagnosticCategory.Warning,
-          ),
+          expect(diag).not.toHaveProperty('category', ts.DiagnosticCategory.Warning),
         );
 
         project.build();
@@ -91,13 +39,43 @@ describe('examples', () => {
         expect(projectCount).toBeGreaterThan(0);
         expect(generated).toBe(projectCount);
 
-        return expect(
-          promisify(readFile)(resolve(copyRoot, 'dist', 'index.js'), {
-            encoding: 'utf-8',
-          }),
-        ).resolves.toContain('MAIN');
-      },
-    );
+        return Promise.resolve();
+      });
+    });
+  }
+
+  test('"basic" can be built with the UpcasingTransformer', async () => {
+    return withTemporaryCopy(resolve(examplesDir, 'basic'), async (copyRoot) => {
+      const project = new TypeScriptSolution(resolve(copyRoot, 'tsconfig.json'));
+      project.transformers.addTransformer(new UpcasingTransformer());
+
+      // Count how many projects get processed
+      let projectCount = 0;
+      project.on(BuildEvent.BeforeProject, () => (projectCount += 1));
+      // Count how many projects successfully generated
+      let generated = 0;
+      project.on(BuildEvent.OutputsGenerated, () => (generated += 1));
+
+      // Those projects cannot have errors
+      project.on(BuildEvent.Diagnostic, (diag) =>
+        expect(diag).not.toHaveProperty('category', ts.DiagnosticCategory.Error),
+      );
+      // Those projects cannot have warnings
+      project.on(BuildEvent.Diagnostic, (diag) =>
+        expect(diag).not.toHaveProperty('category', ts.DiagnosticCategory.Warning),
+      );
+
+      project.build();
+
+      expect(projectCount).toBeGreaterThan(0);
+      expect(generated).toBe(projectCount);
+
+      return expect(
+        promisify(readFile)(resolve(copyRoot, 'dist', 'index.js'), {
+          encoding: 'utf-8',
+        }),
+      ).resolves.toContain('MAIN');
+    });
   });
 
   test('"basic" can be watched the UpcasingTransformer', async () => {
@@ -117,17 +95,11 @@ describe('examples', () => {
 
       // Those projects cannot have errors
       project.on(BuildEvent.Diagnostic, (diag) =>
-        expect(diag).not.toHaveProperty(
-          'category',
-          ts.DiagnosticCategory.Error,
-        ),
+        expect(diag).not.toHaveProperty('category', ts.DiagnosticCategory.Error),
       );
       // Those projects cannot have warnings
       project.on(BuildEvent.Diagnostic, (diag) =>
-        expect(diag).not.toHaveProperty(
-          'category',
-          ts.DiagnosticCategory.Warning,
-        ),
+        expect(diag).not.toHaveProperty('category', ts.DiagnosticCategory.Warning),
       );
 
       const watch = project.watch();
@@ -145,10 +117,7 @@ describe('examples', () => {
         .then(
           () =>
             new Promise((ok, ko) => {
-              setTimeout(
-                () => ko(new Error('Test timed out after 14 seconds!')),
-                10_000,
-              );
+              setTimeout(() => ko(new Error('Test timed out after 14 seconds!')), 10_000);
 
               // Register hook to inspect incremental build result...
               project.once(BuildEvent.AfterProject, () => {
@@ -180,9 +149,9 @@ describe('examples', () => {
 });
 
 test('throws if tsconfig.json does not exist', () => {
-  expect(
-    () => new TypeScriptSolution('/one/can/expect/this/is/not/actually/a/file'),
-  ).toThrow(/does not exist!/);
+  expect(() => new TypeScriptSolution('/one/can/expect/this/is/not/actually/a/file')).toThrow(
+    /does not exist!/,
+  );
 });
 
 class UpcasingTransformer extends Transformer {
@@ -191,9 +160,7 @@ class UpcasingTransformer extends Transformer {
       return node;
     }
     if (ts.isIdentifier(node)) {
-      return (ts.factory.createIdentifier(
-        node.text.toUpperCase(),
-      ) as unknown) as T;
+      return ts.factory.createIdentifier(node.text.toUpperCase()) as unknown as T;
     }
     return this.transformChildren(node, context);
   }

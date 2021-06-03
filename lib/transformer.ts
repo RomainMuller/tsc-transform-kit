@@ -19,7 +19,7 @@ export abstract class Transformer {
   ): T {
     return ts.visitNode<T>(
       node,
-      (node) => this.visit(node, context),
+      (node: ts.Node) => this.visit(node, context),
       this.nodeValidatorFactory?.(context),
       this.nodeLifterFactory?.(context),
     );
@@ -40,7 +40,7 @@ export abstract class Transformer {
   ): T {
     return ts.visitEachChild(
       node,
-      (node) => this.visit(node, context),
+      (node: ts.Node) => this.visit(node, context),
       context.context,
     );
   }
@@ -82,7 +82,7 @@ export abstract class Transformer {
    */
   protected abstract nodeLifterFactory?(
     context: TransformerContext,
-  ): <T extends ts.Node = ts.Node>(nodes: ts.NodeArray<ts.Node>) => T;
+  ): <T extends ts.Node = ts.Node>(nodes: readonly ts.Node[]) => T;
 }
 
 /**

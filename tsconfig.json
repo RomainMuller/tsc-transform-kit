@@ -11,7 +11,7 @@
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "incremental": true,
-    "lib": ["es2018"],
+    "lib": ["es2019"],
     "module": "CommonJS",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
@@ -25,7 +25,7 @@
     "sourceMap": true,
     "strict": true,
     "stripInternal": true,
-    "target": "ES2018",
+    "target": "ES2019",
     "useDefineForClassFields": true,
   },
   "include": [

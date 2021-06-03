@@ -1,9 +1,5 @@
 import * as ts from 'typescript';
-import {
-  Transformer,
-  TransformerContext,
-  TransformerPhase,
-} from './transformer';
+import { Transformer, TransformerContext, TransformerPhase } from './transformer';
 
 export class Transformers {
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
@@ -22,12 +18,8 @@ export class Transformers {
     project: ts.InvalidatedProject<T>,
   ): ts.CustomTransformers {
     return {
-      before: this.#transformers.map((tx) =>
-        customTransformerFactory(tx, TransformerPhase.Before),
-      ),
-      after: this.#transformers.map((tx) =>
-        customTransformerFactory(tx, TransformerPhase.After),
-      ),
+      before: this.#transformers.map((tx) => customTransformerFactory(tx, TransformerPhase.Before)),
+      after: this.#transformers.map((tx) => customTransformerFactory(tx, TransformerPhase.After)),
       afterDeclarations: this.#transformers.map((tx) =>
         customTransformerFactory(tx, TransformerPhase.AfterDeclarations),
       ),
@@ -42,8 +34,7 @@ export class Transformers {
   }
 }
 
-class CustomTransformerFactory<T extends ts.BuilderProgram>
-  implements ts.CustomTransformer {
+class CustomTransformerFactory<T extends ts.BuilderProgram> implements ts.CustomTransformer {
   /* eslint-disable @typescript-eslint/explicit-member-accessibility */
   readonly #delegate: Transformer;
   readonly #transformerContext: TransformerContext;
@@ -56,11 +47,7 @@ class CustomTransformerFactory<T extends ts.BuilderProgram>
     phase: TransformerPhase,
   ) {
     this.#delegate = delegate;
-    this.#transformerContext = new TransformerContext(
-      phase,
-      context,
-      invalidatedProject,
-    );
+    this.#transformerContext = new TransformerContext(phase, context, invalidatedProject);
   }
 
   public transformBundle(node: ts.Bundle): ts.Bundle {

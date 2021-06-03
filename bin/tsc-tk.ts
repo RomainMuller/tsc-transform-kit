@@ -5,9 +5,7 @@ import { TypeScriptSolution, BuildEvent, version } from '../lib';
 
 function compile(tsconfig: string, { watch }: { watch: boolean }): void {
   const project = new TypeScriptSolution(tsconfig);
-  project.on(BuildEvent.Diagnostic, (diag) =>
-    console.log(project.formatDiagnostics(diag)),
-  );
+  project.on(BuildEvent.Diagnostic, (diag) => console.log(project.formatDiagnostics(diag)));
 
   if (watch) {
     const clearScreen = ts.sys.clearScreen ?? (() => null);
